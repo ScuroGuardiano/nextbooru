@@ -1,10 +1,8 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
 using UltraHornyBoard.Dto;
 using UltraHornyBoard.Exceptions;
 using UltraHornyBoard.Models;
-using UltraHornyBoard.Services;
-using BCrypt.Net;
+using BC = BCrypt.Net.BCrypt;
 
 namespace UltraHornyBoard.Services.Implementation;
 
@@ -37,7 +35,7 @@ public class UserService : IUserService
             );
         }
 
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(userData.Password, 12);
+        var hashedPassword = BC.HashPassword(userData.Password, 12);
 
         var user = new User() {
             Username = username,

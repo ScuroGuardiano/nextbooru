@@ -17,6 +17,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <Using Include="System.ComponentModel.DataAnnotations" />
+    <Using Include="UltraHornyBoard.Helpers.Validation" />
     <Using Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 

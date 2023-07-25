@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace UltraHornyBoard.Models;
 
 public class HornyContext : DbContext
 {
-    private IConfiguration configuration;
+    private AppSettings.DatabaseSettings configuration;
 
-    public HornyContext(DbContextOptions<HornyContext> options, IConfiguration configuration) : base(options)
+    public HornyContext(DbContextOptions<HornyContext> options, IOptions<AppSettings> configuration) : base(options)
     {
-        this.configuration = configuration;
+        this.configuration = configuration.Value.Database;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -23,21 +24,21 @@ public class HornyContext : DbContext
     {
         string connectionString = "";
 
-        var host = Environment.GetEnvironmentVariable("DB_HOST") ?? configuration["Database:Host"];
+        var host = configuration.Host;
         if (host is null)
         {
             throw ConfigError("Database host", "Database.Host", "DB_HOST");
         }
 
-        var port = Environment.GetEnvironmentVariable("DB_PORT") ?? configuration["Database:Port"] ?? "5432";
-        var username = Environment.GetEnvironmentVariable("DB_USER") ?? configuration["Database:Username"];
+        var port = configuration.Port ?? "5432";
+        var username = configuration.Username;
         if (username is null)
         {
             throw ConfigError("Database user", "Database.Username", "DB_USER");
         }
 
-        var password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? configuration["Database:Password"];
-        var database = Environment.GetEnvironmentVariable("DB_DATABASE") ?? configuration["Database:Database"];
+        var password = configuration.Password;
+        var database = configuration.Database;
 
         connectionString += $"Host={host};Username={username}";
         

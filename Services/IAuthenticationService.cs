@@ -2,5 +2,5 @@ namespace UltraHornyBoard.Services;
 
 public interface IAuthenticationService
 {
-    Task<Models.User> AuthenticateUser(Dto.LoginUser userData);
+    Task<string> AuthenticateUser(Dto.LoginUser userData);
 }
