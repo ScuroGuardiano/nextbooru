@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: "postgres:15-alpine"
+    ports:
+      - "127.0.0.1:9678:5432"
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=hornyoniichan
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_DB=horny
+    volumes:
+      - hornypgdata:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "127.0.0.1:9679:8080"
+volumes:
+  hornypgdata:
