@@ -1,6 +1,6 @@
 namespace UltraHornyBoard.Dto;
 
-public class RegisterUser
+public class UserRegisterRequest
 {
     [
         Required,
@@ -8,18 +8,18 @@ public class RegisterUser
         MinLength(3),
         RegularExpression(@"^[a-zA-Z0-9]+[a-zA-Z0-9_]*[a-zA-Z0-9]$")
     ]
-    public string? Username { get; set; }
+    public required string Username { get; init; }
 
     [
         Required,
         EmailAddress
     ]
-    public string? Email { get; set; }
+    public required string Email { get; init; }
 
     [
         Required,
         MinLength(8),
         MaxLength(72)
     ]
-    public string? Password { get; set; }
+    public required string Password { get; init; }
 }

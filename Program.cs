@@ -8,9 +8,6 @@ using Models = UltraHornyBoard.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-// builder.Services.Configure<AppSettings>(builder.Configuration);
 EnviromentVariablesMapper.MapVariables(AppSettings.EnvMappings);
 builder.Configuration.AddEnvironmentVariables(AppSettings.EnvPrefix);
 
@@ -20,11 +17,15 @@ builder.Services.AddOptions<AppSettings>()
     .ValidateOnStart();
 
 builder.Services.AddDbContext<Models.HornyContext>();
-builder.Services.AddScoped<IUserService, UserService>();
 
+// Services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();
+    options.Filters.Add(new ValidateModelAttribute());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -4,11 +4,11 @@ namespace UltraHornyBoard.Dto;
 
 public class ApiError
 {
-    public int StatusCode { get; set; }
+    public int StatusCode { get; init; }
 
-    public string? ErrorType { get; set; } 
+    public string? ErrorType { get; init; } 
 
-    public string? Message { get; set; }
+    public string? Message { get; init; }
 
     public static ApiError FromHttpResponseException(HttpResponseException exception) {
         return new ApiError {

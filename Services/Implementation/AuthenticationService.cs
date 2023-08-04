@@ -1,11 +1,47 @@
 using UltraHornyBoard.Dto;
+using UltraHornyBoard.Exceptions;
+using UltraHornyBoard.Models;
+using System.Net;
+using BC = BCrypt.Net.BCrypt;
 
 namespace UltraHornyBoard.Services.Implementation;
 
 public class AuthenticationService : IAuthenticationService
 {
-    public Task<string> AuthenticateUser(LoginUser userData)
+    private readonly HornyContext context;
+    private readonly IJwtService jwtService;
+
+    public AuthenticationService(HornyContext context, IJwtService jwtService)
     {
-        throw new NotImplementedException();
+        this.context = context;
+        this.jwtService = jwtService;
+    }
+
+    public async Task<string> AuthenticateUser(UserLoginRequest userData)
+    {
+        var username = userData.Username.ToLower();
+        var user = await context.Users
+            .Where(user => user.Username == username)
+            .FirstAsync();
+
+        if (user is null)
+        {
+            throw new HttpResponseException(
+                (int)HttpStatusCode.Unauthorized,
+                "InvalidUsernameOrPassword",
+                "Invalid username or password."
+            );
+        }
+
+        if (BC.Verify(userData.Password, user.HashedPassword))
+        {
+            return jwtService.SignToken(user.Id.ToString());    
+        }
+
+        throw new HttpResponseException(
+            (int)HttpStatusCode.Unauthorized,
+            "InvalidUsernameOrPassword",
+            "Invalid username or password."
+        );
     }
 }

@@ -15,7 +15,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+    <PackageReference Include="SGLibCS.Ms" Version="1.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.0" />
     <Using Include="System.ComponentModel.DataAnnotations" />
     <Using Include="UltraHornyBoard.Helpers.Validation" />
     <Using Include="Microsoft.EntityFrameworkCore" />

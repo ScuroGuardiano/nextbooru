@@ -15,13 +15,8 @@ public class UserService : IUserService
         this.context = context;
     }
 
-    public async Task<User> CreateUser(RegisterUser userData)
+    public async Task<User> CreateUser(UserRegisterRequest userData)
     {
-        // Sanity checks, this actually should never happen, coz dto is validated.
-        ArgumentNullException.ThrowIfNullOrEmpty(userData.Username);
-        ArgumentNullException.ThrowIfNullOrEmpty(userData.Email);
-        ArgumentNullException.ThrowIfNullOrEmpty(userData.Password);
-
         var displayName = userData.Username;
         var username = userData.Username.ToLower();
         var email = userData.Email.ToLower();
