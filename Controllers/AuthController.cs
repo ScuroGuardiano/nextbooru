@@ -3,6 +3,7 @@ using UltraHornyBoard.Services;
 using UltraHornyBoard.Dto;
 using Microsoft.Extensions.Options;
 using System.Net;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace UltraHornyBoard.Controllers;
 
@@ -25,6 +26,12 @@ public class AuthController : ControllerBase
         this.authenticationService = authenticationService;
     }
 
+    [HttpGet("test")]
+    public async Task<IActionResult> Test()
+    {
+        return Ok(await userService.MakeAdmin("scuroguardiano"));
+    }
+
     [HttpPost("register")]
     public async Task<ActionResult<ExtendedUserInfo>> Register(UserRegisterRequest userDto)
     {
@@ -39,8 +46,10 @@ public class AuthController : ControllerBase
 
         var user = await userService.CreateUser(userDto);
 
-        return Created($"/users/{user.Username}", new ExtendedUserInfo(user));
+        HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+        return new ExtendedUserInfo(user);
     }
+
 
     [HttpPost("login")]
     public async Task<ActionResult<UserLoginResponse>> Login(UserLoginRequest userDto)

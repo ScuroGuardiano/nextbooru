@@ -44,6 +44,21 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task ChangePassword(string currentPassword, string newPassword)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User> MakeAdmin(string username)
+    {
+        var user = await context.Users
+            .Where(user => user.Username == username)
+            .FirstAsync();
+        user.IsAdmin = false;
+        await context.SaveChangesAsync();
+        return user;
+    }
+
     private async Task<bool> DoesUserAlreadyExists(string username, string email)
     {
         var user = await context.Users
@@ -51,7 +66,7 @@ public class UserService : IUserService
                 user.Username == username ||
                 user.Email == email
             )
-            .FirstAsync();
+            .FirstOrDefaultAsync();
         return user is not null;
     }
 }

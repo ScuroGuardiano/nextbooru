@@ -1,15 +1,21 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 
 namespace UltraHornyBoard.Models;
 
 public class HornyContext : DbContext
 {
-    private AppSettings.DatabaseSettings configuration;
+    private readonly AppSettings.DatabaseSettings configuration;
+
+    
+    public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<User> Users { get; set; } = null!;
 
     public HornyContext(DbContextOptions<HornyContext> options, IOptions<AppSettings> configuration) : base(options)
     {
         this.configuration = configuration.Value.Database;
+        ChangeTracker.StateChanged += OnEntityStateChanged;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -17,8 +23,33 @@ public class HornyContext : DbContext
         optionsBuilder.UseNpgsql(GetDbConnectionString());
     }
 
-    public DbSet<Image> Images { get; set; } = null!;
-    public DbSet<User> Users { get; set; } = null!;
+    private void OnEntityStateChanged(object? sender, EntityStateChangedEventArgs e)
+    {
+        if (e.NewState == EntityState.Modified && e.Entry.Entity is BaseEntity entity)
+        {
+            entity.UpdatedAt = DateTime.UtcNow;
+        }
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        var entitiesWithDate = modelBuilder.Model.GetEntityTypes()
+            .Where(type => type.ClrType.IsSubclassOf(typeof(BaseEntity)))
+            .ToList();
+
+        foreach (var entity in entitiesWithDate)
+        {
+            modelBuilder.Entity(entity.ClrType)
+                .Property("CreatedAt")
+                .HasDefaultValueSql("NOW()");
+
+            modelBuilder.Entity(entity.ClrType)
+                .Property("UpdatedAt")
+                .HasDefaultValueSql("NOW()");
+        }
+
+        base.OnModelCreating(modelBuilder);
+    }
 
     private string GetDbConnectionString()
     {
