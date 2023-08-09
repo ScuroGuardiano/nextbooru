@@ -69,4 +69,11 @@ public class UserService : IUserService
             .FirstOrDefaultAsync();
         return user is not null;
     }
+
+    public async Task<User?> GetUserById(Guid id)
+    {
+        return await context.Users
+            .Where(user => user.Id == id)
+            .FirstOrDefaultAsync();
+    }
 }

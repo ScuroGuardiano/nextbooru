@@ -3,7 +3,6 @@ using UltraHornyBoard.Services;
 using UltraHornyBoard.Dto;
 using Microsoft.Extensions.Options;
 using System.Net;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace UltraHornyBoard.Controllers;
 
@@ -11,9 +10,9 @@ namespace UltraHornyBoard.Controllers;
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    private AppSettings configuration;
-    private IUserService userService;
-    private IAuthenticationService authenticationService;
+    private readonly AppSettings configuration;
+    private readonly IUserService userService;
+    private readonly IAuthenticationService authenticationService;
 
     public AuthController(
         IOptions<AppSettings> configuration,
@@ -24,12 +23,6 @@ public class AuthController : ControllerBase
         this.configuration = configuration.Value;
         this.userService = userService;
         this.authenticationService = authenticationService;
-    }
-
-    [HttpGet("test")]
-    public async Task<IActionResult> Test()
-    {
-        return Ok(await userService.MakeAdmin("scuroguardiano"));
     }
 
     [HttpPost("register")]

@@ -5,6 +5,9 @@ using UltraHornyBoard.Services;
 using UltraHornyBoard.Services.Implementation;
 using UltraHornyBoard.Helpers.Environment;
 using Models = UltraHornyBoard.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,28 @@ builder.Services.AddOptions<AppSettings>()
     .Bind(builder.Configuration)
     .ValidateDataAnnotations()
     .ValidateOnStart();
+
+AppSettings.JwtSettings jwtSettings = new() {
+    Key = null!
+};
+builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
+Validator.ValidateObject(jwtSettings, new ValidationContext(jwtSettings));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(ctx => 
+    {
+        ctx.TokenValidationParameters = new ()
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.Key)
+            ),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddDbContext<Models.HornyContext>();
 
@@ -42,10 +67,10 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection(); FUUUUCK
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 try
 { 

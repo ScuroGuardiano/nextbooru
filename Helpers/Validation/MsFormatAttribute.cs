@@ -19,8 +19,7 @@ public class MsFormatAttribute : ValidationAttribute
             return new ValidationResult($"{name} is invalid SGLibCS.Ms duration format. It has to be a string. Use for example: '1h', '2 hours', '3 years'");
         }
 
-        double res;
-        bool valid = MsConverter.TryParse((string)value, out res);
+        bool valid = MsConverter.TryParse((string)value, out _);
 
         if (!valid)
         {

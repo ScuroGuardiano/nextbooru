@@ -6,7 +6,8 @@ public class UserRegisterRequest
         Required,
         MaxLength(16),
         MinLength(3),
-        RegularExpression(@"^[a-zA-Z0-9]+[a-zA-Z0-9_]*[a-zA-Z0-9]$")
+        RegularExpression(@"^[a-zA-Z0-9]+[a-zA-Z0-9_]*[a-zA-Z0-9]$"),
+        IsNotOneOfAttribute("me", "admin")
     ]
     public required string Username { get; init; }
 

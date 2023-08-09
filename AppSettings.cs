@@ -5,12 +5,12 @@ using SGLibCS.Ms;
 public class AppSettings
 {
     public static Dictionary<string, string> EnvMappings { get; } = new () {
-        { "DB_HOST", "UHB_DATABASE__HOST" },
-        { "DB_PORT", "UHB_DATABASE__PORT" },
-        { "DB_USERNAME", "UHB_DATABASE__USERNAME" },
-        { "DB_PASSWORD", "UHB_DATABASE__PASSWORD" },
-        { "DB_DATABASE", "UHB_DATABASE__DATABASE" },
-        { "JWT_KEY", "JWT__KEY" }
+        { "DB_HOST", $"{EnvPrefix}DATABASE__HOST" },
+        { "DB_PORT", $"{EnvPrefix}DATABASE__PORT" },
+        { "DB_USERNAME", $"{EnvPrefix}DATABASE__USERNAME" },
+        { "DB_PASSWORD", $"{EnvPrefix}DATABASE__PASSWORD" },
+        { "DB_DATABASE", $"{EnvPrefix}DATABASE__DATABASE" },
+        { "JWT_KEY", $"{EnvPrefix}JWT__KEY" }
     };
 
     public static string EnvPrefix { get; } = "UHB_";
@@ -58,7 +58,7 @@ public class AppSettings
         public string Audience { get; set; } = "UltraHornyBoard";
 
         [MsFormat]
-        public string JwtExpiration { get; set; } = "1h";
+        public string JwtExpiration { get; set; } = "1m";
 
         public TimeSpan JwtExpirationTS { get => MsConverter.ParseToTimeSpan(JwtExpiration); }
     }
