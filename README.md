@@ -12,9 +12,9 @@ sudo docker compose up -d
 cd ..
 # Update database
 dotnet tool install --global dotnet-ef # if you don't have it
-dotnet ef database update
+dotnet ef database update --project UltraHornyBoard.Core
 # Project
-dotnet run
+dotnet run --project UltraHornyBoard.Core
 ```
 
 > Note: You need aspnet runtime as well, on Arch based distros install with `sudo pacman -S aspnet-runtime`
