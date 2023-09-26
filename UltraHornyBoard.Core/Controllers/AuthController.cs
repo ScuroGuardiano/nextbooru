@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using UltraHornyBoard.Services;
-using UltraHornyBoard.Dto;
 using Microsoft.Extensions.Options;
 using System.Net;
+using UltraHornyBoard.Core.Services;
+using UltraHornyBoard.Core.Dto;
 
-namespace UltraHornyBoard.Controllers;
+namespace UltraHornyBoard.Core.Controllers;
 
 [ApiController]
 [Route("auth")]
@@ -30,7 +30,8 @@ public class AuthController : ControllerBase
     {
         if (configuration.DisableRegistration)
         {
-            return StatusCode((int)HttpStatusCode.Forbidden, new ApiError {
+            return StatusCode((int)HttpStatusCode.Forbidden, new ApiError
+            {
                 StatusCode = (int)HttpStatusCode.Forbidden,
                 ErrorType = "RegistrationDisabled",
                 Message = "Registration is disabled on this server."
@@ -49,7 +50,8 @@ public class AuthController : ControllerBase
     {
         if (configuration.DisableLogin)
         {
-            return StatusCode((int)HttpStatusCode.Forbidden, new ApiError {
+            return StatusCode((int)HttpStatusCode.Forbidden, new ApiError
+            {
                 StatusCode = (int)HttpStatusCode.Forbidden,
                 ErrorType = "LoginDisabled",
                 Message = "Login is disabled on this server."

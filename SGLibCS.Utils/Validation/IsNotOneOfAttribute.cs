@@ -1,4 +1,6 @@
-namespace UltraHornyBoard.Helpers.Validation;
+using System.ComponentModel.DataAnnotations;
+
+namespace SGLibCS.Utils.Validation;
 
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
 public sealed class IsNotOneOfAttributeAttribute : ValidationAttribute

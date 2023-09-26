@@ -1,4 +1,4 @@
-namespace UltraHornyBoard.Exceptions;
+namespace UltraHornyBoard.Core.Exceptions;
 
 public class HttpResponseException : Exception
 {

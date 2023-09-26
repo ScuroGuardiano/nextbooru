@@ -1,4 +1,6 @@
-namespace UltraHornyBoard.Models;
+using UltraHornyBoard.Shared;
+
+namespace UltraHornyBoard.Core.Models;
 
 public class Image : BaseEntity
 {

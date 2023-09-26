@@ -1,6 +1,7 @@
 namespace UltraHornyBoard;
 
 using SGLibCS.Ms;
+using SGLibCS.Utils.Validation;
 
 public class AppSettings
 {

@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Options;
 using UltraHornyBoard;
-using UltraHornyBoard.Filters;
-using UltraHornyBoard.Services;
-using UltraHornyBoard.Services.Implementation;
-using UltraHornyBoard.Helpers.Environment;
-using Models = UltraHornyBoard.Models;
+using UltraHornyBoard.Core.Services.Implementation;
+using SGLibCS.Utils.Environment;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using UltraHornyBoard.Core.Services;
+using UltraHornyBoard.Core.Filters;
+using UltraHornyBoard.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +41,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddDbContext<Models.HornyContext>();
+builder.Services.AddDbContext<HornyContext>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();

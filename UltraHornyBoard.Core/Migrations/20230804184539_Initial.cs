@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UltraHornyBoard.Migrations
+namespace UltraHornyBoard.Core.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration

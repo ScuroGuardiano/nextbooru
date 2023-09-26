@@ -1,10 +1,10 @@
 using System.Net;
-using UltraHornyBoard.Dto;
-using UltraHornyBoard.Exceptions;
-using UltraHornyBoard.Models;
+using UltraHornyBoard.Core.Dto;
+using UltraHornyBoard.Core.Exceptions;
+using UltraHornyBoard.Core.Models;
 using BC = BCrypt.Net.BCrypt;
 
-namespace UltraHornyBoard.Services.Implementation;
+namespace UltraHornyBoard.Core.Services.Implementation;
 
 public class UserService : IUserService
 {

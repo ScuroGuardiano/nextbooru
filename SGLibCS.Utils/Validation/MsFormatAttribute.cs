@@ -1,5 +1,6 @@
-namespace UltraHornyBoard.Helpers.Validation;
+namespace SGLibCS.Utils.Validation;
 
+using System.ComponentModel.DataAnnotations;
 using SGLibCS.Ms;
 
 public class MsFormatAttribute : ValidationAttribute

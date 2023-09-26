@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace UltraHornyBoard.Models;
+namespace UltraHornyBoard.Shared;
 
 public class BaseEntity
 {

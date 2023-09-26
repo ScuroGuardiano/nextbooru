@@ -1,4 +1,6 @@
-namespace UltraHornyBoard.Helpers.Validation;
+using System.ComponentModel.DataAnnotations;
+
+namespace SGLibCS.Utils.Validation;
 
 // TODO: Can enhace it to display better error messages
 

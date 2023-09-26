@@ -2,10 +2,10 @@ using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UltraHornyBoard.Dto;
-using UltraHornyBoard.Services;
+using UltraHornyBoard.Core.Services;
+using UltraHornyBoard.Core.Dto;
 
-namespace UltraHornyBoard.Controllers;
+namespace UltraHornyBoard.Core.Controllers;
 
 [Authorize]
 [ApiController]
@@ -25,7 +25,8 @@ public class UsersController : ControllerBase
         string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId is null)
         {
-            return StatusCode((int)HttpStatusCode.Unauthorized, new ApiError {
+            return StatusCode((int)HttpStatusCode.Unauthorized, new ApiError
+            {
                 StatusCode = (int)HttpStatusCode.Unauthorized,
                 Message = "Authentication token is not valid.",
                 ErrorType = "AuthenticationTokenInvalid"
@@ -36,7 +37,8 @@ public class UsersController : ControllerBase
 
         if (user is null)
         {
-            return StatusCode((int)HttpStatusCode.NotFound, new ApiError {
+            return StatusCode((int)HttpStatusCode.NotFound, new ApiError
+            {
                 StatusCode = (int)HttpStatusCode.NotFound,
                 Message = "Currently authenticated user was not found.",
                 ErrorType = "CurrentUserNotFound"

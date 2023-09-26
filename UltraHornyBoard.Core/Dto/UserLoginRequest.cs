@@ -1,4 +1,4 @@
-namespace UltraHornyBoard.Dto;
+namespace UltraHornyBoard.Core.Dto;
 
 public class UserLoginRequest
 {

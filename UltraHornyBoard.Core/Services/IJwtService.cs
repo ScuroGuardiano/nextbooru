@@ -1,4 +1,4 @@
-namespace UltraHornyBoard.Services;
+namespace UltraHornyBoard.Core.Services;
 
 public interface IJwtService
 {

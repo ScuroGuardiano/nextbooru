@@ -1,4 +1,5 @@
-namespace UltraHornyBoard.Models;
+using UltraHornyBoard.Shared;
+namespace UltraHornyBoard.Core.Models;
 
 public class User : BaseEntity
 {

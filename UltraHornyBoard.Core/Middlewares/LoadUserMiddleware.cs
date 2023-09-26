@@ -1,6 +1,6 @@
-using UltraHornyBoard.Services;
+using UltraHornyBoard.Core.Services;
 
-namespace UltraHornyBoard.Middlewares;
+namespace UltraHornyBoard.Core.Middlewares;
 
 public class LoadUserMiddleware
 {
@@ -13,7 +13,7 @@ public class LoadUserMiddleware
 
     public async Task InvokeAsync(HttpContext context, IUserService userService)
     {
-        
+
 
         // Call the next delegate/middleware in the pipeline.
         await _next(context);

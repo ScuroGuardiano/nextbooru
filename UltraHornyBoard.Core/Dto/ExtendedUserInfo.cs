@@ -1,14 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
-using UltraHornyBoard.Models;
+using UltraHornyBoard.Core.Models;
 
-namespace UltraHornyBoard.Dto;
+namespace UltraHornyBoard.Core.Dto;
 
 public class ExtendedUserInfo : BasicUserInfo
 {
     public ExtendedUserInfo()
     {
     }
-    
+
     [SetsRequiredMembers]
     public ExtendedUserInfo(User user) : base(user)
     {

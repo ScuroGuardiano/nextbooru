@@ -1,4 +1,4 @@
-namespace UltraHornyBoard.Helpers.Environment;
+namespace SGLibCS.Utils.Environment;
 using SysEnv = System.Environment;
 
 

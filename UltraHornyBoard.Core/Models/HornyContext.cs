@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
+using UltraHornyBoard.Shared;
 
-namespace UltraHornyBoard.Models;
+namespace UltraHornyBoard.Core.Models;
 
 public class HornyContext : DbContext
 {
     private readonly AppSettings.DatabaseSettings configuration;
 
-    
+
     public DbSet<Image> Images { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
 
@@ -72,7 +72,7 @@ public class HornyContext : DbContext
         var database = configuration.Database;
 
         connectionString += $"Host={host};Username={username}";
-        
+
         if (port is not null)
         {
             connectionString += $";Port={port}";
@@ -91,7 +91,8 @@ public class HornyContext : DbContext
         return connectionString;
     }
 
-    private Exception ConfigError(string what, string configKey, string env) {
+    private Exception ConfigError(string what, string configKey, string env)
+    {
         return new KeyNotFoundException($"{what} is not set. Set {configKey} in appsettings.json or {env} environment variable.");
     }
 }

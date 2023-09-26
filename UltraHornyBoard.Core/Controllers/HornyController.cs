@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace UltraHornyBoard.Controllers;
+namespace UltraHornyBoard.Core.Controllers;
 
 [ApiController]
 [Route("")]
@@ -16,7 +16,8 @@ public class HornyController : ControllerBase
     [HttpGet(Name = "GetAppInfo")]
     public Dto.AppInfo Get()
     {
-        return new() {
+        return new()
+        {
             Version = configuration["AppInfo:Version"],
             Name = configuration["AppInfo:Name"],
             Author = configuration["AppInfo:Author"],

@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UltraHornyBoard.Models;
+using UltraHornyBoard.Core.Models;
+
 
 #nullable disable
 
-namespace UltraHornyBoard.Migrations
+namespace UltraHornyBoard.Core.Migrations
 {
     [DbContext(typeof(HornyContext))]
     partial class HornyContextModelSnapshot : ModelSnapshot

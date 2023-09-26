@@ -1,4 +1,6 @@
-namespace UltraHornyBoard.Dto;
+using SGLibCS.Utils.Validation;
+
+namespace UltraHornyBoard.Core.Dto;
 
 public class UserRegisterRequest
 {

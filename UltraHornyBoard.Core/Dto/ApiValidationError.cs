@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace UltraHornyBoard.Dto;
+namespace UltraHornyBoard.Core.Dto;
 
 public class ApiValidationError : ApiError
 {

@@ -1,9 +1,9 @@
-namespace UltraHornyBoard.Filters;
+namespace UltraHornyBoard.Core.Filters;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using UltraHornyBoard.Dto;
-using UltraHornyBoard.Exceptions;
+using UltraHornyBoard.Core.Dto;
+using UltraHornyBoard.Core.Exceptions;
 
 public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 {

@@ -1,10 +1,10 @@
-using UltraHornyBoard.Dto;
-using UltraHornyBoard.Exceptions;
-using UltraHornyBoard.Models;
 using System.Net;
 using BC = BCrypt.Net.BCrypt;
+using UltraHornyBoard.Core.Dto;
+using UltraHornyBoard.Core.Exceptions;
+using UltraHornyBoard.Core.Models;
 
-namespace UltraHornyBoard.Services.Implementation;
+namespace UltraHornyBoard.Core.Services.Implementation;
 
 public class AuthenticationService : IAuthenticationService
 {
