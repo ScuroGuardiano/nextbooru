@@ -1,0 +1,18 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.search {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+button {
+  margin-top: .8rem;
+}
+
+input {
+  width: min(100%, 300px);
+}
