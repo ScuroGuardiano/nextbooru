@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UltraHornyBoard.Shared\UltraHornyBoard.Shared.csproj" />
     <ProjectReference Include="..\SGLibCS.Utils\SGLibCS.Utils.csproj" />
+    <ProjectReference Include="..\UltraHornyBoard.Auth\UltraHornyBoard.Auth.csproj" />
   </ItemGroup>
 
 </Project>

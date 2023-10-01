@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using UltraHornyBoard.Auth.Models;
 using UltraHornyBoard.Shared;

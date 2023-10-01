@@ -2,7 +2,8 @@ using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UltraHornyBoard.Core.Services;
+using UltraHornyBoard.Auth.Models;
+using UltraHornyBoard.Auth.Services;
 using UltraHornyBoard.Core.Dto;
 
 namespace UltraHornyBoard.Core.Controllers;
@@ -12,9 +13,9 @@ namespace UltraHornyBoard.Core.Controllers;
 [Route("users")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService userService;
+    private readonly IUserService<User> userService;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService<User> userService)
     {
         this.userService = userService;
     }
@@ -33,7 +34,7 @@ public class UsersController : ControllerBase
             });
         }
 
-        var user = await userService.GetUserById(Guid.Parse(userId));
+        var user = await userService.GetById(Guid.Parse(userId));
 
         if (user is null)
         {

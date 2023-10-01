@@ -37,6 +37,7 @@ public class AuthenticationControllerDelegate<TUser, TSession> : IAuthentication
             var user = await userService.AuthenticateUser(body);
             var principal = userService.UserToClaimsPrincipal(user, AuthenticationConstants.AuthenticationScheme);
             var session = await sessionService.CreateSessionAsync(user);
+            principal.Identities.First().AddClaim(new (AuthenticationConstants.SessionClaimType, session.Id.ToString()));
             await httpContext.SignInAsync(AuthenticationConstants.AuthenticationScheme, principal);
             return controller.NoContent();
         }
@@ -60,7 +61,7 @@ public class AuthenticationControllerDelegate<TUser, TSession> : IAuthentication
         return controller.NoContent();
     }
 
-    public ActionResult<SessionResponse> Me(ControllerBase controller)
+    public ActionResult<SessionResponse> CurrentSession(ControllerBase controller)
     {
         var session = sessionService.GetCurrentSessionFromHttpContext();
         // Session should always be true in Authorized route

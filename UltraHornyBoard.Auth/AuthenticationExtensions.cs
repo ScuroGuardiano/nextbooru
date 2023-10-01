@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using UltraHornyBoard.Auth.Controllers;
 using UltraHornyBoard.Auth.Models;
 using UltraHornyBoard.Auth.Services;
-
 
 namespace UltraHornyBoard.Auth;
 
@@ -28,17 +29,21 @@ public static class AuthenticationExtensions
         >(services);
     }
 
-    public static void AddSGAuthentication<TSessionService, TUserService, TUser, TSession>(this IServiceCollection services)
+    public static void AddSGAuthentication<TSessionService, TUserService, TUser, TSession>(this IServiceCollection services, bool addControllers = true)
         where TSessionService : class, ISessionService<TSession>
         where TUserService : class, IUserService<TUser>
         where TSession: Session
         where TUser: User
     {
+        services.AddHttpContextAccessor();
         services.AddScoped<ISessionService<TSession>, TSessionService>();
         services.AddScoped<IUserService<TUser>, TUserService>();
-        services.AddScoped<IAuthenticationControllerDelegate, AuthenticationControllerDelegate<TUser, TSession>>();
 
-        services.AddMvc().AddApplicationPart(typeof(AuthenticationController).Assembly);
+        if (addControllers)
+        {
+            services.AddScoped<IAuthenticationControllerDelegate, AuthenticationControllerDelegate<TUser, TSession>>();
+            services.AddMvc().AddApplicationPart(typeof(AuthenticationController).Assembly);
+        }
 
         services.AddAuthentication(AuthenticationConstants.AuthenticationScheme)
         .AddCookie(AuthenticationConstants.AuthenticationScheme, o =>
@@ -72,7 +77,7 @@ public static class AuthenticationExtensions
                 }
 
                 var session = await sessionService.AccessSessionAsync(sessionId);
-                if (await sessionService.IsSessionValidAsync(session))
+                if (!await sessionService.IsSessionValidAsync(session))
                 {
                     context.RejectPrincipal();
                     await context.HttpContext.SignOutAsync();

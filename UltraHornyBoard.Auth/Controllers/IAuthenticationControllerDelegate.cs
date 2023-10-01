@@ -8,7 +8,7 @@ public interface IAuthenticationControllerDelegate
     Task<IActionResult> Register(RegisterUserRequest body, ControllerBase controller);
     Task<IActionResult> Login(LoginUserRequest body, ControllerBase controller);
 
-    ActionResult<SessionResponse> Me(ControllerBase controller);
+    ActionResult<SessionResponse> CurrentSession(ControllerBase controller);
 
     Task<IActionResult> Logout(ControllerBase controller);
 

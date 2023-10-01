@@ -29,7 +29,12 @@
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
-            "request": "attach"
+            "request": "attach",
+            "symbolOptions": {
+              "searchPaths": ["./**/*"],
+              "searchMicrosoftSymbolServer": false,
+              "searchNuGetOrgSymbolServer": false
+            },
         }
     ]
 }

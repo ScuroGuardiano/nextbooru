@@ -11,13 +11,13 @@ public class User : BaseEntity
     public string? Email { get; set; }
 
     [Required]
-    public string Username { get; set; }
+    public string Username { get; set; } = null!;
 
     [Required]
-    public string DisplayName { get; set; }
+    public string DisplayName { get; set; } = null!;
 
     [Required]
-    public string HashedPassword { get; set; }
+    public string HashedPassword { get; set; } = null!;
 
     public DateTime? BannedUntil { get; set; } = null;
 

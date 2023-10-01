@@ -26,11 +26,11 @@ public class AuthenticationController : ControllerBase
         return await authenticationControllerDelegate.Login(body, this);
     }
 
-    [HttpGet("me")]
+    [HttpGet("currentSession")]
     [Authorize]
-    public ActionResult<SessionResponse> Me()
+    public ActionResult<SessionResponse> CurrentSession()
     {
-        return authenticationControllerDelegate.Me(this);
+        return authenticationControllerDelegate.CurrentSession(this);
     }
 
     [Authorize]

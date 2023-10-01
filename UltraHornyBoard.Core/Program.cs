@@ -1,13 +1,9 @@
 using Microsoft.Extensions.Options;
 using UltraHornyBoard;
-using UltraHornyBoard.Core.Services.Implementation;
 using SGLibCS.Utils.Environment;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using UltraHornyBoard.Core.Services;
 using UltraHornyBoard.Core.Filters;
 using UltraHornyBoard.Core.Models;
+using UltraHornyBoard.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,34 +15,8 @@ builder.Services.AddOptions<AppSettings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-AppSettings.JwtSettings jwtSettings = new() {
-    Key = null!
-};
-builder.Configuration.GetSection("Jwt").Bind(jwtSettings);
-Validator.ValidateObject(jwtSettings, new ValidationContext(jwtSettings));
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(ctx => 
-    {
-        ctx.TokenValidationParameters = new ()
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings.Key)
-            ),
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-
 builder.Services.AddDbContext<HornyContext>();
-
-// Services
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddSingleton<IJwtService, JwtService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddSGAuthentication<HornyContext>();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();

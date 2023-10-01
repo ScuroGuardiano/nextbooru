@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UltraHornyBoard.Core.Models;
@@ -11,9 +12,11 @@ using UltraHornyBoard.Core.Models;
 namespace UltraHornyBoard.Core.Migrations
 {
     [DbContext(typeof(HornyContext))]
-    partial class HornyContextModelSnapshot : ModelSnapshot
+    [Migration("20231001031010_NewAuth")]
+    partial class NewAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using UltraHornyBoard.Auth.Models;
 using UltraHornyBoard.Core.Models;
 
 namespace UltraHornyBoard.Core.Dto;

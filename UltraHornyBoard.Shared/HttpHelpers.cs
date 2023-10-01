@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace UltraHornyBoard.Shared;
 
 public static class HttpHelpers

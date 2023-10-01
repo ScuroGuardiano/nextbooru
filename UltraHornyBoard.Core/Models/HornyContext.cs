@@ -1,16 +1,19 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
+using UltraHornyBoard.Auth;
+using UltraHornyBoard.Auth.Models;
 using UltraHornyBoard.Shared;
 
 namespace UltraHornyBoard.Core.Models;
 
-public class HornyContext : DbContext
+public class HornyContext : DbContext, IAuthDbContext
 {
     private readonly AppSettings.DatabaseSettings configuration;
 
 
     public DbSet<Image> Images { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Session> Sessions { get; set; } = null!;
 
     public HornyContext(DbContextOptions<HornyContext> options, IOptions<AppSettings> configuration) : base(options)
     {
@@ -33,6 +36,8 @@ public class HornyContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        AuthHelpers.RegisterSessionUserRelation<User, Session>(modelBuilder);
+
         var entitiesWithDate = modelBuilder.Model.GetEntityTypes()
             .Where(type => type.ClrType.IsSubclassOf(typeof(BaseEntity)))
             .ToList();
@@ -55,19 +60,9 @@ public class HornyContext : DbContext
     {
         string connectionString = "";
 
-        var host = configuration.Host;
-        if (host is null)
-        {
-            throw ConfigError("Database host", "Database.Host", "DB_HOST");
-        }
-
+        var host = configuration.Host ?? throw ConfigError("Database host", "Database.Host", "DB_HOST");
         var port = configuration.Port ?? "5432";
-        var username = configuration.Username;
-        if (username is null)
-        {
-            throw ConfigError("Database user", "Database.Username", "DB_USER");
-        }
-
+        var username = configuration.Username ?? throw ConfigError("Database user", "Database.Username", "DB_USER");
         var password = configuration.Password;
         var database = configuration.Database;
 
