@@ -11,4 +11,7 @@ public class Image : BaseEntity
 
     [Required]
     public string? Url { get; set; }
+
+    [Required]
+    public bool IsPublic { get; set; }
 }

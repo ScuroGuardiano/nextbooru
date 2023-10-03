@@ -14,14 +14,15 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.Exception is HttpResponseException exception)
+        if (context.Exception is not HttpResponseException exception)
         {
-            context.Result = new JsonResult(ApiError.FromHttpResponseException(exception))
-            {
-                StatusCode = exception.StatusCode
-            };
-
-            context.ExceptionHandled = true;
+            return;
         }
+        context.Result = new JsonResult(ApiError.FromHttpResponseException(exception))
+        {
+            StatusCode = exception.StatusCode
+        };
+
+        context.ExceptionHandled = true;
     }
 }

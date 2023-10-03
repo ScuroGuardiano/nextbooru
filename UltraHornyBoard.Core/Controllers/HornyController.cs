@@ -16,12 +16,12 @@ public class HornyController : ControllerBase
     [HttpGet(Name = "GetAppInfo")]
     public Dto.AppInfo Get()
     {
-        return new()
+        return new Dto.AppInfo()
         {
             Version = configuration["AppInfo:Version"],
             Name = configuration["AppInfo:Name"],
             Author = configuration["AppInfo:Author"],
-            AuthorURL = configuration["AppInfo:AuthorURL"]
+            AuthorUrl = configuration["AppInfo:AuthorURL"]
         };
     }
 }

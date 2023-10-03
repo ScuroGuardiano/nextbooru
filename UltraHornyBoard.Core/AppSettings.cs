@@ -1,4 +1,4 @@
-namespace UltraHornyBoard;
+namespace UltraHornyBoard.Core;
 
 using SGLibCS.Ms;
 using SGLibCS.Utils.Validation;

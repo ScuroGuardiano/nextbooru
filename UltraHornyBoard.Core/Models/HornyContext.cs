@@ -6,7 +6,7 @@ using UltraHornyBoard.Shared;
 
 namespace UltraHornyBoard.Core.Models;
 
-public class HornyContext : DbContext, IAuthDbContext
+public sealed class HornyContext : DbContext, IAuthDbContext
 {
     private readonly AppSettings.DatabaseSettings configuration;
 
@@ -28,7 +28,7 @@ public class HornyContext : DbContext, IAuthDbContext
 
     private void OnEntityStateChanged(object? sender, EntityStateChangedEventArgs e)
     {
-        if (e.NewState == EntityState.Modified && e.Entry.Entity is BaseEntity entity)
+        if (e is { NewState: EntityState.Modified, Entry.Entity: BaseEntity entity })
         {
             entity.UpdatedAt = DateTime.UtcNow;
         }
@@ -67,11 +67,7 @@ public class HornyContext : DbContext, IAuthDbContext
         var database = configuration.Database;
 
         connectionString += $"Host={host};Username={username}";
-
-        if (port is not null)
-        {
-            connectionString += $";Port={port}";
-        }
+        connectionString += $";Port={port}";
 
         if (password is not null)
         {

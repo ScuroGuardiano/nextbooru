@@ -1,12 +1,11 @@
 using Microsoft.Extensions.Options;
-using UltraHornyBoard;
 using SGLibCS.Utils.Environment;
 using UltraHornyBoard.Core.Filters;
 using UltraHornyBoard.Core.Models;
 using UltraHornyBoard.Auth;
+using UltraHornyBoard.Core;
 
 var builder = WebApplication.CreateBuilder(args);
-
 EnviromentVariablesMapper.MapVariables(AppSettings.EnvMappings);
 builder.Configuration.AddEnvironmentVariables(AppSettings.EnvPrefix);
 
@@ -22,6 +21,7 @@ builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();
     options.Filters.Add(new ValidateModelAttribute());
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

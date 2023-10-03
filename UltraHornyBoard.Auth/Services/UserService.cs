@@ -72,9 +72,9 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
 
     public async Task<TUser> RegisterUserAsync(RegisterUserRequest dto)
     {
-        if (await DoesUserAlreadyExits(dto)) 
+        if (await DoesUserAlreadyExits(dto))
         {
-            throw new Exception("Chuj w dupe");
+            throw new UserAlreadyExistsException(dto.Username);
         }
 
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
