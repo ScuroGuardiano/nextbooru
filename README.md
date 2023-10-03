@@ -1,20 +1,20 @@
-# ULTRA HORNY BOARD
-Welcome to my super duper image board written in ASP.NET, Entity Framework and Angular!
+# Nextbooru
+Blazingly fast, mobile friendly, convient image board written in ASP.NET, Entity Framework and Angular!
 
 ## How to run this thingy
 First make sure you have docker and docker compose installed. Then follow:
 ```sh
-git clone https://github.com/scuroguardiano/ultra-horny-board.git
-cd ultra-horny-board
+git clone https://github.com/scuroguardiano/nextbooru.git
+cd nextbooru
 # Postgres setup
 cd pg-dev
 sudo docker compose up -d
 cd ..
 # Update database
 dotnet tool install --global dotnet-ef # if you don't have it
-dotnet ef database update --project UltraHornyBoard.Core
+dotnet ef database update --project Nextbooru.Core
 # Project
-dotnet run --project UltraHornyBoard.Core
+dotnet run --project Nextbooru.Core
 ```
 
 > Note: You need aspnet runtime as well, on Arch based distros install with `sudo pacman -S aspnet-runtime`
