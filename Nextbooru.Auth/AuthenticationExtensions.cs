@@ -48,6 +48,8 @@ public static class AuthenticationExtensions
         services.AddAuthentication(AuthenticationConstants.AuthenticationScheme)
         .AddCookie(AuthenticationConstants.AuthenticationScheme, o =>
         {
+            o.Cookie.HttpOnly = true;
+
             o.Events.OnRedirectToLogin = context =>
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;

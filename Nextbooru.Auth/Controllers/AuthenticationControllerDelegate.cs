@@ -1,5 +1,5 @@
-using System.Net;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nextbooru.Auth.Dto;
 using Nextbooru.Auth.Models;
@@ -39,7 +39,7 @@ public class AuthenticationControllerDelegate<TUser, TSession> : IAuthentication
             var session = await sessionService.CreateSessionAsync(user);
             principal.Identities.First().AddClaim(new (AuthenticationConstants.SessionClaimType, session.Id.ToString()));
             await httpContext.SignInAsync(AuthenticationConstants.AuthenticationScheme, principal);
-            return controller.NoContent();
+            return new JsonResult(new SessionResponse(session));
         }
         catch(Exception exception)
         {
@@ -81,7 +81,10 @@ public class AuthenticationControllerDelegate<TUser, TSession> : IAuthentication
             principal.Identities.First().AddClaim(new(AuthenticationConstants.SessionClaimType, session.Id.ToString()));
             await httpContext.SignInAsync(AuthenticationConstants.AuthenticationScheme, principal);
 
-            return new StatusCodeResult((int)HttpStatusCode.Created);
+            return new JsonResult(new SessionResponse(session))
+            {
+                StatusCode = StatusCodes.Status201Created
+            };
         }
         catch (Exception exception)
         {

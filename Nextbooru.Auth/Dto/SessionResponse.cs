@@ -10,11 +10,11 @@ public class SessionResponse
     [SetsRequiredMembers]
     public SessionResponse(Session session)
     {
-        Id = session.Id;
         User = new UserResponse
         {
-            Id = session.User!.Id,  // User should be always set here, so error if it'll be null is good
-            Username = session.User.Username
+            // User should be always set here, so error if it'll be null is good
+            Username = session.User!.Username,
+            DisplayName = session.User.DisplayName
         };
         LoggedInIP = session.LoggedInIP;
         LastIP = session.LastIP;
@@ -23,8 +23,8 @@ public class SessionResponse
         LastAccess = session.LastAccess;
     }
 
-
-    public Guid Id { get; init; }
+    // public Guid Id { get; init; }
+    // User shouldn't know ID of his session.
 
     public required UserResponse User { get; init; }
 
