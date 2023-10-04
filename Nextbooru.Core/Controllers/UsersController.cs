@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto;
+using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Controllers;
 
@@ -24,25 +25,15 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<ExtendedUserInfo>> GetMe()
     {
         string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId is null)
-        {
-            return StatusCode((int)HttpStatusCode.Unauthorized, new ApiError
-            {
-                StatusCode = (int)HttpStatusCode.Unauthorized,
-                Message = "Authentication token is not valid.",
-                ErrorType = "AuthenticationTokenInvalid"
-            });
-        }
-
-        var user = await userService.GetById(Guid.Parse(userId));
+        var user = await userService.GetById(Guid.Parse(userId!));
 
         if (user is null)
         {
-            return StatusCode((int)HttpStatusCode.NotFound, new ApiError
+            return StatusCode((int)HttpStatusCode.NotFound, new ApiErrorReponse
             {
                 StatusCode = (int)HttpStatusCode.NotFound,
                 Message = "Currently authenticated user was not found.",
-                ErrorType = "CurrentUserNotFound"
+                ErrorCode = ApiErrorCodes.CurrentUserNotFound
             });
         }
 

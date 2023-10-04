@@ -20,8 +20,14 @@
   </ul>
 
   <ul class="auth">
-    <li>
+    <li *ngIf="!(isLoggedIn$ | async); else loggedIn">
       <a routerLink="auth">Log in / Register</a>
     </li>
+    <ng-template #loggedIn>
+      <li>{{ username$ | async }}</li>
+      <li>
+        <a href="#" (click)="logout($event)">Logout</a>
+      </li>
+    </ng-template>
   </ul>
 </header>

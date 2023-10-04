@@ -14,7 +14,8 @@ public class WrongUsernameOrPasswordException : Exception, IConvertibleToApiErro
     {
         return new() {
             StatusCode = (int)HttpStatusCode.Unauthorized,
-            ErrorType = GetType().FullName,
+            ErrorCode = ApiErrorCodes.WrongUsernameOrPassword,
+            ErrorCLRType = GetType().FullName,
             Message = Message
         };
     }

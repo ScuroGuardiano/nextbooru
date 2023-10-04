@@ -14,7 +14,8 @@ public class UserAlreadyExistsException : Exception, IConvertibleToApiErrorRespo
     {
         return new() {
             StatusCode = (int)HttpStatusCode.Conflict,
-            ErrorType = GetType().FullName,
+            ErrorCode = ApiErrorCodes.UserAlreadyExists,
+            ErrorCLRType = GetType().FullName,
             Message = Message
         };
     }

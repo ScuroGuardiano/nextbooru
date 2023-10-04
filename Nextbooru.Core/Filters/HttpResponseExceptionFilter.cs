@@ -2,8 +2,8 @@ namespace Nextbooru.Core.Filters;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Nextbooru.Core.Dto;
 using Nextbooru.Core.Exceptions;
+using Nextbooru.Shared;
 
 public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 {
@@ -16,9 +16,36 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
     {
         if (context.Exception is not HttpResponseException exception)
         {
+            // I don't know if I need this, for now I'll let ASP.NET to handle uknown exceptions
+
+            // var env = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
+            // string? clrType = null;
+            // string message = "Internal server error.";
+            
+            // // Uknown exceptions can include some sensitive data
+            // // I want to send it with response only if app is in development mode.
+            // if (env?.IsDevelopment() ?? false)
+            // {
+            //     clrType = context.Exception?.GetType().FullName;
+            //     message = context.Exception?.Message ?? message;
+            // }
+
+            // var apiErrorResponse = new ApiErrorReponse
+            // {
+            //     Message = message,
+            //     ErrorCLRType = clrType,
+            //     ErrorCode = ApiErrorCodes.InternalServerError,
+            //     StatusCode = StatusCodes.Status500InternalServerError
+            // };
+
+            // context.Result = new JsonResult(apiErrorResponse)
+            // {
+            //     StatusCode = StatusCodes.Status500InternalServerError
+            // };
             return;
         }
-        context.Result = new JsonResult(ApiError.FromHttpResponseException(exception))
+        
+        context.Result = new JsonResult(exception.ToApiErrorResponse())
         {
             StatusCode = exception.StatusCode
         };

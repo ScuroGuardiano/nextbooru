@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/nextbooru.client",
+            "outputPath": "dist/nextbooru",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -56,19 +56,28 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "src/proxy.conf.json"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "Nextbooru.Client:build:production"
+              "browserTarget": "nextbooru:build:production"
             },
             "development": {
-              "browserTarget": "Nextbooru.Client:build:development"
+              "browserTarget": "nextbooru:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Nextbooru.Client:build"
+            "browserTarget": "nextbooru:build"
           }
         },
         "test": {

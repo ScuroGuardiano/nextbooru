@@ -23,13 +23,29 @@
   --accent-900: #064e3b;
   --accent-950: #022c22;
 
+  --rose-50: #fff1f2;
+  --rose-100: #ffe4e6;
+  --rose-200: #fecdd3;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+  --rose-600: #e11d48;
+  --rose-700: #be123c;
+  --rose-800: #9f1239;
+  --rose-900: #881337;
+  --rose-950: #4c0519;
+
   --fg: var(--main-100);
   --fg-2: var(--main-200);
   --fg-3: var(--main-300);
   --fg-4: var(--main-400);
   --fg-5: var(--main-500);
 
+  --accent-fg: var(--accent-400);
+
   --fg-on-accent: var(--main-950);
+
+  --error-fg: var(--rose-500);
 
   --border: var(--main-300);
   --light-border: var(--main-500);
@@ -102,8 +118,9 @@ button {
   &:disabled {
     color: var(--accent-100);
     background-color: var(--accent-800);
+    cursor: not-allowed;
   }
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--accent-500);
   }
 }

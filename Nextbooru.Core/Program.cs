@@ -36,9 +36,21 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection(); FUUUUCK
+app.UsePathBase(new PathString("/api"));
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Block using api routes without prefix.
+// TODO: change later to support SPA
+app.Use((HttpContext ctx, RequestDelegate next) => {
+    if (ctx.Request.PathBase == string.Empty)
+    {
+        ctx.Response.StatusCode = 404;
+        return Task.CompletedTask;
+    }
+    return next(ctx);
+});
 
 app.MapControllers();
 

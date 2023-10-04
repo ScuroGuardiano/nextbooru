@@ -6,14 +6,14 @@
   <div class="tab-content" [ngSwitch]="activeTab()">
     <ng-container *ngSwitchCase="'login'">
       <h2>Log in</h2>
-        <form>
-          <label for="username">Username:</label>
-          <input type="text" id="username" name="username" />
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" />
+        <form [formGroup]="loginForm">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" formControlName="username" required/>
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" formControlName="password" required/>
 
           <div class="submit-wrapper">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" (click)="login($event)" [disabled]="!(loginFormValid$ | async)">Submit</button>
           </div>
         </form>
     </ng-container>
@@ -21,19 +21,19 @@
     <ng-container *ngSwitchCase="'register'">
       <h2>Register</h2>
         <form>
-          <label for="username">Username:</label>
+          <label for="username">Username</label>
           <input type="text" id="username" name="username" placeholder="Between 3 and 16 characters" />
           <span class="note separated-from-top">Password has to be between 8 and 72 characters</span>
-          <label for="password">Password:</label>
+          <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="At least 8 characters" />
-          <label for="repeat-password">Repeat:</label>
+          <label for="repeat-password">Repeat</label>
           <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat password" />
           <span class="note separated-from-top">Email is optional, only for password recovery.</span>
-          <label for="email">Email:</label>
+          <label for="email">Email</label>
           <input type="email" id="email" name="email" placeholder="optional" />
 
           <div class="submit-wrapper">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary" (click)="register($event)">Submit</button>
           </div>
         </form>
     </ng-container>

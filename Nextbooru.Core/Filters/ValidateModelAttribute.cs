@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Filters;
 
@@ -12,7 +13,7 @@ public class ValidateModelAttribute : ActionFilterAttribute
         {
             context.Result = new JsonResult(new Dto.ApiValidationError {
                 StatusCode = (int)HttpStatusCode.BadRequest,
-                ErrorType = "ValidationError",
+                ErrorCode = ApiErrorCodes.ValidationError,
                 Message = "Incorrent entity was posted with request, more information in ModelState property.",
                 ModelState = context.ModelState
             });
