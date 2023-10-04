@@ -24,8 +24,8 @@ export class AuthInterceptor implements HttpInterceptor {
       withCredentials: true
     });
 
-    if (this.skipRedirect(request)) {
-      return next.handle(request);
+    if (this.ignoreErrorResponse(request)) {
+      return next.handle(newReq);
     }
 
     return next.handle(newReq)
@@ -42,7 +42,7 @@ export class AuthInterceptor implements HttpInterceptor {
     BackendEndpoints.auth.logout
   ]
 
-  private skipRedirect(req: HttpRequest<unknown>) {
+  private ignoreErrorResponse(req: HttpRequest<unknown>) {
     return AuthInterceptor.skipEndpoints.some(endpoint => {
       return req.url.startsWith(endpoint);
     });
