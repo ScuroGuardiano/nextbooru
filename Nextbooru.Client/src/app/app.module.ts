@@ -8,7 +8,6 @@ import { LayoutModule } from './layout/layout.module';
 import { NGXS_PLUGINS, NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { AuthState } from './store/state/auth.state';
-import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
 @NgModule({
   declarations: [
@@ -25,8 +24,7 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
     ),
     NgxsStoragePluginModule.forRoot({
       key: AuthState
-    }),
-    NgxsResetPluginModule.forRoot()
+    })
   ],
   bootstrap: [AppComponent]
 })

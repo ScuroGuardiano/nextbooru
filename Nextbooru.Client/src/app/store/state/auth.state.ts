@@ -6,7 +6,7 @@ import { ErrorService } from "src/app/services/error.service";
 import { Login, Logout, Register } from "../actions/auth.actions";
 import { LoggerService } from "src/app/services/logger.service";
 import { Router } from "@angular/router";
-import { StateResetAll } from "ngxs-reset-plugin";
+import { ResetState, ResettableState } from "../resettable-state/resettable-state";
 
 export const AUTH_STATE_TOKEN = new StateToken<AuthStateModel>('auth');
 
@@ -20,7 +20,7 @@ export interface AuthStateModel {
 
 type Context = StateContext<AuthStateModel>;
 
-@State<AuthStateModel>({
+@ResettableState<AuthStateModel>({
   name: AUTH_STATE_TOKEN,
   defaults: {}
 })
@@ -102,7 +102,8 @@ export class AuthState {
         }),
         finalize(() => {
           // ctx.patchState({ logoutLoading: false }) useless coz we're resetting store anyways.
-          ctx.dispatch(new StateResetAll());
+          ctx.dispatch(new ResetState());
+          console.log("XD");
           this.ngZone.run(() => this.router.navigateByUrl("/auth"));
         })
       )
