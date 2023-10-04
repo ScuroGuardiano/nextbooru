@@ -24,6 +24,7 @@ export interface SessionUser {
 }
 
 export interface ApiErrorResponse {
+  type: "ApiErrorResponse",
   statusCode: number;
   message?: string;
   errorClrType?: string;

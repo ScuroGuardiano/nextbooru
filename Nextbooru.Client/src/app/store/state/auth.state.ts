@@ -103,7 +103,6 @@ export class AuthState {
         finalize(() => {
           // ctx.patchState({ logoutLoading: false }) useless coz we're resetting store anyways.
           ctx.dispatch(new ResetState());
-          console.log("XD");
           this.ngZone.run(() => this.router.navigateByUrl("/auth"));
         })
       )

@@ -1,4 +1,5 @@
 <div class="tab-card">
+  <app-spinner-overlay [enabled]="(loading$ | async) ?? false"></app-spinner-overlay>
   <div class="tab-headers">
     <span [ngClass]="loginHeaderClassess()" (click)="activeTab.set('login')">Login</span>
     <span [ngClass]="registerHeaderClasses()" (click)="activeTab.set('register')">Register</span>
@@ -6,6 +7,7 @@
   <div class="tab-content" [ngSwitch]="activeTab()">
     <ng-container *ngSwitchCase="'login'">
       <h2>Log in</h2>
+        <span class="error" *ngIf="loginError$ | async as error">Login failed: {{ error }}</span>
         <form [formGroup]="loginForm">
           <label for="username">Username</label>
           <input type="text" id="username" name="username" formControlName="username" required/>

@@ -1,11 +1,13 @@
 :host {
   width: 100%;
+  height: fit-content;
   display: flex;
   justify-content: center;
 }
 
 .search {
   text-align: center;
+  position: relative;
 }
 
 button {

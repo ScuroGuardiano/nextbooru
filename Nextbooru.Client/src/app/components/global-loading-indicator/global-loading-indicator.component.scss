@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+
+  .indicator {
+    background-color: var(--accent-fg);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--accent-fg) 50%,
+      transparent 100%);
+    width: 150%;
+    transform: translateX(-50%);
+    position: relative;
+    height: 100%;
+    animation: loadingIndicator 2s infinite ease-in-out;
+  }
+}
+
+@keyframes loadingIndicator {
+  0% {
+    left: 5%;
+  }
+  50% {
+    left: 95%;
+  }
+  100% {
+    left: 5%;
+  }
+}

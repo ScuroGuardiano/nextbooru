@@ -8,6 +8,7 @@ import { LayoutModule } from './layout/layout.module';
 import { NGXS_PLUGINS, NgxsModule } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { AuthState } from './store/state/auth.state';
+import { httpInterceptorProviders } from './interceptors/interceptors';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,9 @@ import { AuthState } from './store/state/auth.state';
     NgxsStoragePluginModule.forRoot({
       key: AuthState
     })
+  ],
+  providers: [
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent]
 })

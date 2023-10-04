@@ -1,0 +1,52 @@
+// https://loading.io/css/
+
+:host {
+  --spinner-color: var(--accent-fg);
+
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+
+  &.large {
+    width: 120px;
+    height: 120px;
+    &::after {
+      width: 96px;
+      height: 96px;
+      margin: 12px;
+      border-width: 9px;
+    }
+  }
+
+  &.small {
+    width: 40px;
+    height: 40px;
+    &::after {
+      width: 32px;
+      height: 32px;
+      margin: 4px;
+      border-width: 3px;
+    }
+  }
+}
+
+:host::after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid var(--spinner-color);
+  border-color: var(--spinner-color) transparent var(--spinner-color) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -4,6 +4,7 @@ import { LayoutComponent } from './layout.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
+import { GlobalLoadingIndicatorComponent } from '../components/global-loading-indicator/global-loading-indicator.component';
 
 
 
@@ -15,7 +16,8 @@ import { RouterModule } from '@angular/router';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    GlobalLoadingIndicatorComponent
   ],
   exports: [
     LayoutComponent
