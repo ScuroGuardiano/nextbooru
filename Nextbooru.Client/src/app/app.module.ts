@@ -12,7 +12,7 @@ import { httpInterceptorProviders } from './interceptors/interceptors';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

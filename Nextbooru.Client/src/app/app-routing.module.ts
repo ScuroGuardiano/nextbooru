@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -12,6 +13,12 @@ const routes: Routes = [
     path: "auth",
     loadComponent: () => import("./pages/auth-page/auth-page.component")
       .then(c => c.AuthPageComponent)
+  },
+  {
+    path: "settings",
+    loadComponent: () => import("./pages/settings-page/settings-page.component")
+      .then(c => c.SettingsPageComponent),
+    canActivate: [authGuard]
   }
 ];
 
