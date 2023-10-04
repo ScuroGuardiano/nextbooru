@@ -19,7 +19,7 @@ export class AuthService {
 
   register(credentials: RegisterRequest) {
     return this.httpClient.post<SessionResponse>(
-      BackendEndpoints.auth.login,
+      BackendEndpoints.auth.register,
       credentials
     );
   }

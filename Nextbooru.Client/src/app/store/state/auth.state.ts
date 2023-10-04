@@ -16,6 +16,7 @@ export interface AuthStateModel {
   loading?: boolean;
   logoutLoading?: boolean;
   loginError?: string;
+  registerError?: string;
 }
 
 type Context = StateContext<AuthStateModel>;
@@ -77,7 +78,7 @@ export class AuthState {
         },
         error: err => {
           ctx.setState({
-            loginError: this.errorService.errorToHuman(err)
+            registerError: this.errorService.errorToHuman(err)
           });
           this.logger.error(err);
         }

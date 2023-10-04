@@ -8,34 +8,35 @@
     <ng-container *ngSwitchCase="'login'">
       <h2>Log in</h2>
         <span class="error" *ngIf="loginError$ | async as error">Login failed: {{ error }}</span>
-        <form [formGroup]="loginForm">
+        <form [formGroup]="loginForm" (submit)="login($event)">
           <label for="username">Username</label>
           <input type="text" id="username" name="username" formControlName="username" required/>
           <label for="password">Password</label>
           <input type="password" id="password" name="password" formControlName="password" required/>
 
           <div class="submit-wrapper">
-            <button type="submit" class="btn btn-primary" (click)="login($event)" [disabled]="!(loginFormValid$ | async)">Submit</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(loginFormValid$ | async)">Submit</button>
           </div>
         </form>
     </ng-container>
 
     <ng-container *ngSwitchCase="'register'">
       <h2>Register</h2>
-        <form>
+        <span class="error" *ngIf="registerError$ | async as error">Register failed: {{ error }}</span>
+        <form [formGroup]="registerForm" (submit)="register($event)">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Between 3 and 16 characters" />
+          <input type="text" id="username" name="username" formControlName="username" placeholder="Between 3 and 16 characters" required />
           <span class="note separated-from-top">Password has to be between 8 and 72 characters</span>
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="At least 8 characters" />
+          <input type="password" id="password" name="password" formControlName="password" placeholder="At least 8 characters" required/>
           <label for="repeat-password">Repeat</label>
-          <input type="password" id="repeat-password" name="repeatPassword" placeholder="Repeat password" />
+          <input type="password" id="repeat-password" name="repeatPassword" formControlName="repeatPassword" placeholder="Repeat password" required />
           <span class="note separated-from-top">Email is optional, only for password recovery.</span>
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="optional" />
+          <input type="email" id="email" name="email" formControlName="email" placeholder="optional" />
 
           <div class="submit-wrapper">
-            <button type="submit" class="btn btn-primary" (click)="register($event)">Submit</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(registerFormValid$ | async)">Submit</button>
           </div>
         </form>
     </ng-container>

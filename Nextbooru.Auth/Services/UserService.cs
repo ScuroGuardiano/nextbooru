@@ -79,7 +79,8 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
 
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
         var user = new TUser {
-            Username = dto.Username!,
+            Username = dto.Username!.ToLower(),
+            DisplayName = dto.Username,
             Email = dto.Email,
             HashedPassword = hashedPassword
         };
