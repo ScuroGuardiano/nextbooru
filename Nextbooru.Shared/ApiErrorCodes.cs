@@ -2,6 +2,7 @@ namespace Nextbooru.Shared;
 
 public static class ApiErrorCodes
 {
+    // Constants here are okey, coz I will never change them.
     public const string WrongUsernameOrPassword = "WrongUsernameOrPassword";
     public const string UserAlreadyExists = "UserAlreadyExists";
 

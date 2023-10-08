@@ -2,7 +2,7 @@ namespace SGLibCS.Utils.Environment;
 using SysEnv = System.Environment;
 
 
-public class EnviromentVariablesMapper
+public static class EnviromentVariablesMapper
 {
     public static void MapVariables(Dictionary<string, string> mappings)
     {

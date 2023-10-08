@@ -2,7 +2,7 @@ namespace Nextbooru.Auth;
 
 public static class AuthenticationConstants
 {
-    public const string AuthenticationScheme = "SGAuth";
-    public const string SessionClaimType = "sg_session";
-    public const string SessionHttpContextItemKey = "sg_session";
+    public static string AuthenticationScheme { get; } = "SGAuth";
+    public static string SessionClaimType { get;} = "sg_session";
+    public static string SessionHttpContextItemKey { get; } = "sg_session";
 }

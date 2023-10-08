@@ -24,8 +24,8 @@ public class AppSettings
     [Required, ValidateObject]
     public required JwtSettings Jwt { get; set; }
 
-    public bool DisableRegistration { get; set; } = false;
-    public bool DisableLogin { get; set; } = false;
+    public bool DisableRegistration { get; set; }
+    public bool DisableLogin { get; set; }
 
     // Subtypes
 

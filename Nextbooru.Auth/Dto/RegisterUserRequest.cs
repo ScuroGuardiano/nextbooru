@@ -10,7 +10,7 @@ public class RegisterUserRequest
     public required string Username { get; set; }
 
     [EmailAddress]
-    public string? Email { get; set; } = null;
+    public string? Email { get; set; }
 
     [Required]
     [MaxLength(72)]

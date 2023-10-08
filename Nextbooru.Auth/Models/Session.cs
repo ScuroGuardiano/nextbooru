@@ -4,6 +4,7 @@ public class Session
 {
     public Guid Id { get; set; }
 
+    // FIXME: This should be generic or thrown away
     public User? User { get; set; }
 
     public Guid UserId { get; set; }

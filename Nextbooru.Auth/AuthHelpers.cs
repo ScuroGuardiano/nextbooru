@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Nextbooru.Auth;
 
-public class AuthHelpers
+public static class AuthHelpers
 {
     public static void RegisterSessionUserRelation<TUser, TSession>(ModelBuilder modelBuilder)
     where TUser : Models.User
