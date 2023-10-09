@@ -11,7 +11,7 @@ using Nextbooru.Core.Models;
 
 namespace Nextbooru.Core.Migrations
 {
-    [DbContext(typeof(HornyContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20231001031010_NewAuth")]
     partial class NewAuth
     {

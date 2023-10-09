@@ -4,11 +4,11 @@ namespace Nextbooru.Core.Controllers;
 
 [ApiController]
 [Route("")]
-public class HornyController : ControllerBase
+public class RootController : ControllerBase
 {
     private readonly IConfiguration configuration;
 
-    public HornyController(IConfiguration config)
+    public RootController(IConfiguration config)
     {
         configuration = config;
     }

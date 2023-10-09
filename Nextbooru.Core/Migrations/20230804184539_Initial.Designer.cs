@@ -12,7 +12,7 @@ using Nextbooru.Core.Models;
 
 namespace Nextbooru.Core.Migrations
 {
-    [DbContext(typeof(HornyContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20230804184539_Initial")]
     partial class Initial
     {

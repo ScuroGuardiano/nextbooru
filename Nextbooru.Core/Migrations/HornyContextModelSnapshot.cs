@@ -10,7 +10,7 @@ using Nextbooru.Core.Models;
 
 namespace Nextbooru.Core.Migrations
 {
-    [DbContext(typeof(HornyContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class HornyContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

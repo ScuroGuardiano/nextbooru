@@ -4,9 +4,9 @@ namespace Nextbooru.Core.Services;
 
 public class ImageService
 {
-    private readonly HornyContext dbContext;
+    private readonly AppDbContext dbContext;
 
-    public ImageService(HornyContext dbContext)
+    public ImageService(AppDbContext dbContext)
     {
         this.dbContext = dbContext;
     }

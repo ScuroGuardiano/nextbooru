@@ -14,8 +14,8 @@ builder.Services.AddOptions<AppSettings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddDbContext<HornyContext>();
-builder.Services.AddSGAuthentication<HornyContext>();
+builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddSGAuthentication<AppDbContext>();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();

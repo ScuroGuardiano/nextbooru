@@ -6,7 +6,7 @@ using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Models;
 
-public sealed class HornyContext : DbContext, IAuthDbContext
+public sealed class AppDbContext : DbContext, IAuthDbContext
 {
     private readonly AppSettings.DatabaseSettings configuration;
 
@@ -15,7 +15,7 @@ public sealed class HornyContext : DbContext, IAuthDbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
 
-    public HornyContext(DbContextOptions<HornyContext> options, IOptions<AppSettings> configuration) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
     {
         this.configuration = configuration.Value.Database;
         ChangeTracker.StateChanged += OnEntityStateChanged;
