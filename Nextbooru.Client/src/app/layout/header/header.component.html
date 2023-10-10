@@ -3,7 +3,7 @@
 
   <ul class="main-menu">
     <li>
-      <a href="">Upload</a>
+      <a routerLink="/upload">Upload</a>
     </li>
     <li>
       <a href="">Posts</a>
@@ -21,7 +21,7 @@
 
   <ul class="auth">
     <li *ngIf="!(isLoggedIn$ | async); else loggedIn">
-      <a routerLink="auth">Log in / Register</a>
+      <a routerLink="/auth">Log in / Register</a>
     </li>
     <ng-template #loggedIn>
       <li>{{ username$ | async }}</li>

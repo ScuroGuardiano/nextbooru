@@ -1,0 +1,28 @@
+<div *ngIf="isLoggedIn$ | async; else notLoggedIn">
+  <h2>Upload image</h2>
+  <form [formGroup]="uploadForm" (submit)="onSubmit($event)">
+    <label for="title">Title:</label>
+    <input type="text" id="title" formControlName="title" placeholder="title">
+
+    <label for="source">Source:</label>
+    <input type="text" id="source" formControlName="source" placeholder="source">
+
+    <label for="tags">Tags:</label>
+    <textarea id="tags" formControlName="tags" placeholder="meme pink_hair blue_eyes" required></textarea>
+    <span class="note">Seperate tags with spaces.</span>
+
+    <label for="file">Select file:</label>
+    <input type="file" (change)="onFilePicked($event)" id="file">
+
+    <div class="submit-wrapper">
+      <button type="submit" class="btn btn-primary large" [disabled]="uploadForm.invalid">Upload</button>
+    </div>
+  </form>
+</div>
+
+<ng-template #notLoggedIn>
+  <div class="not-logged-in">
+    <h2>Only logged in users can upload images.</h2>
+    <a class="big-link" routerLink="/auth">Log in or register</a>
+  </div>
+</ng-template>

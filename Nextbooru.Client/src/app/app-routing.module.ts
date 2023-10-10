@@ -15,6 +15,11 @@ const routes: Routes = [
       .then(c => c.AuthPageComponent)
   },
   {
+    path: "upload",
+    loadComponent: () => import("./pages/upload-page/upload-page.component")
+      .then(c => c.UploadPageComponent)
+  },
+  {
     path: "settings",
     loadComponent: () => import("./pages/settings-page/settings-page.component")
       .then(c => c.SettingsPageComponent),

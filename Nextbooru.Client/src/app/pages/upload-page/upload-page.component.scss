@@ -1,0 +1,39 @@
+:host {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+:host > div {
+  width: min(300px, 100%);
+}
+
+.submit-wrapper {
+  margin-top: 1rem;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.big-link {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.not-logged-in {
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-top: .8rem;
+}
+
+input, textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+}
+textarea {
+  height: 8rem;
+}
