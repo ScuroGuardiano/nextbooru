@@ -68,8 +68,7 @@ public static class AuthenticationExtensions
                 var sessionService = httpCtx.RequestServices.GetRequiredService<ISessionService<TSession>>();
 
                 var sessionId = context.Principal.Claims
-                    .Where(c => c.Type == AuthenticationConstants.SessionClaimType)
-                    .FirstOrDefault()?.Value;
+                    .FirstOrDefault(c => c.Type == AuthenticationConstants.SessionClaimType)?.Value;
 
                 if (sessionId is null)
                 {

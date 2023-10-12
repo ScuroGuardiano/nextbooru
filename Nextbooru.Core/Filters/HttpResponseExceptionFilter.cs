@@ -14,42 +14,22 @@ public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.Exception is not HttpResponseException exception)
+        if (context.Exception is null)
         {
-            // I don't know if I need this, for now I'll let ASP.NET to handle uknown exceptions
+            return;
+        }
 
-            // var env = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
-            // string? clrType = null;
-            // string message = "Internal server error.";
-            
-            // // Uknown exceptions can include some sensitive data
-            // // I want to send it with response only if app is in development mode.
-            // if (env?.IsDevelopment() ?? false)
-            // {
-            //     clrType = context.Exception?.GetType().FullName;
-            //     message = context.Exception?.Message ?? message;
-            // }
-
-            // var apiErrorResponse = new ApiErrorReponse
-            // {
-            //     Message = message,
-            //     ErrorCLRType = clrType,
-            //     ErrorCode = ApiErrorCodes.InternalServerError,
-            //     StatusCode = StatusCodes.Status500InternalServerError
-            // };
-
-            // context.Result = new JsonResult(apiErrorResponse)
-            // {
-            //     StatusCode = StatusCodes.Status500InternalServerError
-            // };
+        if (!ApiErrorResponseConverter.TryFromException(context.Exception, out var apiErrorResponse))
+        {
             return;
         }
         
-        context.Result = new JsonResult(exception.ToApiErrorResponse())
+        context.Result = new JsonResult(apiErrorResponse)
         {
-            StatusCode = exception.StatusCode
+            StatusCode = apiErrorResponse.StatusCode
         };
-
+            
         context.ExceptionHandled = true;
+
     }
 }

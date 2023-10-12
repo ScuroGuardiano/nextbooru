@@ -4,6 +4,8 @@ using Nextbooru.Core.Filters;
 using Nextbooru.Core.Models;
 using Nextbooru.Auth;
 using Nextbooru.Core;
+using Nextbooru.Core.Services;
+using Nextbooru.Shared.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 EnviromentVariablesMapper.MapVariables(AppSettings.EnvMappings);
@@ -16,6 +18,9 @@ builder.Services.AddOptions<AppSettings>()
 
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddSGAuthentication<AppDbContext>();
+
+builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();

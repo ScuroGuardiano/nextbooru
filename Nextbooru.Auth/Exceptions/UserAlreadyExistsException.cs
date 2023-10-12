@@ -10,7 +10,7 @@ public class UserAlreadyExistsException : Exception, IConvertibleToApiErrorRespo
     {
     }
 
-    public ApiErrorReponse ToApiErrorResponse()
+    public ApiErrorResponse ToApiErrorResponse()
     {
         return new() {
             StatusCode = (int)HttpStatusCode.Conflict,

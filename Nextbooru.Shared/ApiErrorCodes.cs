@@ -11,4 +11,7 @@ public static class ApiErrorCodes
     public const string CurrentUserNotFound = "CurrentUserNotFound";
 
     public const string InternalServerError = "InternalServerError";
+    public const string FileDoesNotExists = "FileDoesNotExists";
+    public const string NotAllowedFileType = "NotAllowedFileType";
+    public const string InvalidImageFile = "InvalidImageFile";
 }

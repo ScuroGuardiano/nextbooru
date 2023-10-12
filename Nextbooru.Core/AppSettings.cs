@@ -5,28 +5,35 @@ using SGLibCS.Utils.Validation;
 
 public class AppSettings
 {
+    public static string EnvPrefix { get; } = "UHB_";
+    
     public static Dictionary<string, string> EnvMappings { get; } = new () {
         { "DB_HOST", $"{EnvPrefix}DATABASE__HOST" },
         { "DB_PORT", $"{EnvPrefix}DATABASE__PORT" },
         { "DB_USERNAME", $"{EnvPrefix}DATABASE__USERNAME" },
         { "DB_PASSWORD", $"{EnvPrefix}DATABASE__PASSWORD" },
-        { "DB_DATABASE", $"{EnvPrefix}DATABASE__DATABASE" },
-        { "JWT_KEY", $"{EnvPrefix}JWT__KEY" }
+        { "DB_DATABASE", $"{EnvPrefix}DATABASE__DATABASE" }
     };
-
-    public static string EnvPrefix { get; } = "UHB_";
 
     public AppInfoSettings? AppInfo { get; set; }
     
     [Required, ValidateObject]
     public required DatabaseSettings Database { get; set; }
 
-    [Required, ValidateObject]
-    public required JwtSettings Jwt { get; set; }
-
     public bool DisableRegistration { get; set; }
     public bool DisableLogin { get; set; }
 
+    [Required]
+    public string MediaStoragePath { get; set; } = AppConstants.DefaultMediaStoragePath!;
+    
+    public List<string> AllowedUploadExtensions { get; set; } = new() { ".jpg", ".jpeg", ".png", ".gif" };
+    
+    /// <summary>
+    /// Strict image checks not only checks format of an image but also it's validity.
+    /// If image is not valid then error is returned.
+    /// </summary>
+    public bool StrictImageChecks { get; set; }
+    
     // Subtypes
 
     public class DatabaseSettings
@@ -46,21 +53,6 @@ public class AppSettings
         public string? Version { get; set; }
         public string? Name { get; set; }
         public string? Author { get; set; }
-        public string? AuthorURL { get; set; }
-    }
-
-    public class JwtSettings
-    {
-        [Required(ErrorMessage = "Jwt.Key is required. Set it via JWT_KEY environment variable.")]
-        public required string Key { get; set; }
-
-        public string Issuer { get; set; } = "Nextbooru";
-
-        public string Audience { get; set; } = "Nextbooru";
-
-        [MsFormat]
-        public string JwtExpiration { get; set; } = "1m";
-
-        public TimeSpan JwtExpirationTS { get => MsConverter.ParseToTimeSpan(JwtExpiration); }
+        public string? AuthorUrl { get; set; }
     }
 }

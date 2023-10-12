@@ -11,9 +11,9 @@ public class HttpResponseException : Exception, IConvertibleToApiErrorResponse
 
     public string? ErrorCode { get; }
 
-    public ApiErrorReponse ToApiErrorResponse()
+    public ApiErrorResponse ToApiErrorResponse()
     {
-        return new ApiErrorReponse {
+        return new ApiErrorResponse {
             StatusCode = StatusCode,
             ErrorCode = ErrorCode,
             ErrorCLRType = GetType().FullName,

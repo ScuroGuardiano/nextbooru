@@ -15,19 +15,6 @@
   display: inline-block;
 }
 
-label:has(+ input:required)::after {
-  content: "*";
-  color: var(--accent-fg);
-}
-
-label:has(+ input.ng-invalid.ng-touched) {
-  color: var(--error-fg);
-}
-
-input.ng-invalid.ng-touched {
-  border-color: var(--error-fg);
-}
-
 form {
   display: grid;
   grid-template-columns: auto 1fr;

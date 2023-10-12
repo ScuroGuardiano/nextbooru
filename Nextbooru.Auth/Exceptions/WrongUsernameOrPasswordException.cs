@@ -10,7 +10,7 @@ public class WrongUsernameOrPasswordException : Exception, IConvertibleToApiErro
     {
     }
 
-    public ApiErrorReponse ToApiErrorResponse()
+    public ApiErrorResponse ToApiErrorResponse()
     {
         return new() {
             StatusCode = (int)HttpStatusCode.Unauthorized,

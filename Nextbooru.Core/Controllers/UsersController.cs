@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
 
         if (user is null)
         {
-            return StatusCode((int)HttpStatusCode.NotFound, new ApiErrorReponse
+            return StatusCode((int)HttpStatusCode.NotFound, new ApiErrorResponse
             {
                 StatusCode = (int)HttpStatusCode.NotFound,
                 Message = "Currently authenticated user was not found.",

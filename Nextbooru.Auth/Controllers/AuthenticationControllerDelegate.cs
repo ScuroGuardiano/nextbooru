@@ -12,9 +12,8 @@ public class AuthenticationControllerDelegate<TUser, TSession> : IAuthentication
     where TUser : User
     where TSession : Session
 {
-
-    readonly IUserService<TUser> userService;
-    readonly ISessionService<TSession> sessionService;
+    private readonly IUserService<TUser> userService;
+    private readonly ISessionService<TSession> sessionService;
 
     public AuthenticationControllerDelegate(IUserService<TUser> userService, ISessionService<TSession> sessionService)
     {

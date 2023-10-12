@@ -99,8 +99,7 @@ public class SessionService<TDbContext, TSession, TUser> : ISessionService<TSess
     {
         var context = httpContextAccessor.HttpContext!;
         var sessionId = context.User.Claims
-            .Where(c => c.Type == AuthenticationConstants.SessionClaimType)
-            .FirstOrDefault()?.Value;
+            .FirstOrDefault(c => c.Type == AuthenticationConstants.SessionClaimType)?.Value;
 
         if (sessionId is null)
         {

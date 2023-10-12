@@ -2,8 +2,8 @@ namespace Nextbooru.Shared;
 
 public interface IConvertibleToApiErrorResponse
 {
-    ApiErrorReponse ToApiErrorResponse();
-    Task<ApiErrorReponse> ToApiErrorResponseAsync() {
+    ApiErrorResponse ToApiErrorResponse();
+    Task<ApiErrorResponse> ToApiErrorResponseAsync() {
         return Task.FromResult(ToApiErrorResponse());
     }
 }

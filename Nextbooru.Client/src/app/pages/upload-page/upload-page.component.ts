@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Select } from '@ngxs/store';
 import { AuthState, AuthStateModel } from 'src/app/store/state/auth.state';
-import { Observable, map } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UploadService } from 'src/app/services/upload.service';
 
 @Component({
   selector: 'app-upload-page',
@@ -14,6 +15,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UploadPageComponent {
+  private readonly uploadService = inject(UploadService);
+
   @Select(AuthState) authState$!: Observable<AuthStateModel>;
   isLoggedIn$ = this.authState$.pipe(
     map(s => !!s.isLoggedIn)
@@ -31,6 +34,8 @@ export class UploadPageComponent {
   onSubmit(event: Event) {
     event.preventDefault();
     console.dir(this.uploadForm);
+    // @ts-ignore
+    firstValueFrom(this.uploadService.upload(this.uploadForm.value));
   }
 
   onFilePicked(event: Event) {

@@ -15,6 +15,8 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
 
+    public DbSet<Tag> Tags { get; set; } = null!;
+
     public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
     {
         this.configuration = configuration.Value.Database;
@@ -38,6 +40,16 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     {
         AuthHelpers.RegisterSessionUserRelation<User, Session>(modelBuilder);
 
+        modelBuilder.Entity<Image>()
+            .HasOne(i => i.UploadedBy)
+            .WithMany()
+            .HasForeignKey(i => i.UploadedById)
+            .IsRequired();
+
+        modelBuilder.Entity<Image>()
+            .HasMany(i => i.Tags)
+            .WithMany(t => t.Images);
+        
         var entitiesWithDate = modelBuilder.Model.GetEntityTypes()
             .Where(type => type.ClrType.IsSubclassOf(typeof(BaseEntity)))
             .ToList();

@@ -41,7 +41,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
     public async Task<TUser> AuthenticateUser(LoginUserRequest dto)
     {
         var user = await dbContext.Users
-            .Where(user => user.Username.ToLower() == dto.Username.ToLower())
+            .Where(user => string.Equals(user.Username, dto.Username, StringComparison.CurrentCultureIgnoreCase))
             .FirstOrDefaultAsync();
 
         if (user is null)
@@ -104,7 +104,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
     private async Task<bool> DoesUserAlreadyExits(RegisterUserRequest dto)
     {
         return await dbContext.Users
-            .Where(user => user.Username.ToLower() == dto.Username!.ToLower())
+            .Where(user => string.Equals(user.Username, dto.Username!, StringComparison.CurrentCultureIgnoreCase))
             .AnyAsync();
     }
 }

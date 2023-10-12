@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nextbooru.Core.Dto;
 
 namespace Nextbooru.Core.Controllers;
 
@@ -13,4 +14,3 @@ public class ImageController : ControllerBase
         return NoContent();
     }
 }
-

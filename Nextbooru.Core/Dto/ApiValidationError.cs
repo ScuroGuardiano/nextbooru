@@ -3,7 +3,7 @@ using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Dto;
 
-public class ApiValidationError : ApiErrorReponse
+public class ApiValidationError : ApiErrorResponse
 {
     public ModelStateDictionary? ModelState { get; init; }
 }

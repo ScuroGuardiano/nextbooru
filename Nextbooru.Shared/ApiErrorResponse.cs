@@ -1,6 +1,6 @@
 namespace Nextbooru.Shared;
 
-public class ApiErrorReponse
+public class ApiErrorResponse
 {
     // For easy check on frontend
     public string Type { get; } = "ApiErrorResponse";
