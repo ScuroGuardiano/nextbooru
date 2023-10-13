@@ -26,6 +26,52 @@ public class ImageService
         this.configuration = options.Value;
     }
 
+    public async Task<Image?> GetImageAsync(long id, bool includeTags = false, bool includeUploadedBy = false)
+    {
+        var query = dbContext.Images.Where(i => i.Id == id);
+
+        if (includeTags)
+        {
+            query = query.Include(i => i.Tags);
+        }
+
+        if (includeUploadedBy)
+        {
+            query = query.Include(i => i.UploadedBy);
+        }
+
+        return await query.FirstOrDefaultAsync();
+    }
+
+    public async Task<Stream?> GetImageStreamByIdAsync(long id)
+    {
+        var imageFileId = await dbContext.Images
+            .Where(i => i.Id == id)
+            .Select(i => i.StoreFileId)
+            .FirstOrDefaultAsync();
+
+        if (imageFileId is null)
+        {
+            return null;
+        }
+
+        return await GetImageStreamByFileIdAsync(imageFileId);
+    }
+    
+    public async Task<Stream> GetImageStreamByFileIdAsync(string fileId)
+    {
+        return await mediaStore.GetFileStreamAsync(fileId);
+    }
+    
+    public async Task<List<Image>> ListRecentlyAddedImagesAsync()
+    {
+        return await dbContext.Images
+            .Where(x => x.IsPublic)
+            .OrderBy(x => x.CreatedAt)
+            .Take(20)
+            .ToListAsync();
+    }
+
     public async Task<Image> AddImageAsync(UploadFileRequest request, Guid userId)
     {
         var fileExtension = MimeTypeMap.GetExtension(request.File.ContentType, false);
@@ -106,14 +152,5 @@ public class ImageService
         }
 
         return (width, height);
-    }
-
-    public async Task<List<Image>> ListRecentlyAddedImagesAsync()
-    {
-        return await dbContext.Images
-            .Where(x => x.IsPublic)
-            .OrderBy(x => x.CreatedAt)
-            .Take(20)
-            .ToListAsync();
     }
 }

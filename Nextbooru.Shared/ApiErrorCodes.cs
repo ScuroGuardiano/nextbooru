@@ -14,4 +14,5 @@ public static class ApiErrorCodes
     public const string FileDoesNotExists = "FileDoesNotExists";
     public const string NotAllowedFileType = "NotAllowedFileType";
     public const string InvalidImageFile = "InvalidImageFile";
+    public const string NotFound = "NotFound";
 }

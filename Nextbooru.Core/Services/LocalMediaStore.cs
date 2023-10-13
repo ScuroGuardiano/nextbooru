@@ -24,7 +24,7 @@ public class LocalMediaStore : IMediaStore
             Directory.CreateDirectory(configuration.MediaStoragePath);
         }
         
-        var file = File.Open(Path.Join(configuration.MediaStoragePath, randomName), FileMode.CreateNew);
+        await using var file = File.Open(Path.Join(configuration.MediaStoragePath, randomName), FileMode.CreateNew);
         await fileStream.CopyToAsync(file);
         
         return randomName;
