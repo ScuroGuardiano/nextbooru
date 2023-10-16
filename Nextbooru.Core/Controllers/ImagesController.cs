@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto;
@@ -14,11 +15,27 @@ public class ImagesController : ControllerBase
 {
     private readonly ImageService imageService;
     private readonly ISessionService<Session> sessionService;
+    private readonly AppSettings configuration;
 
-    public ImagesController(ImageService imageService, ISessionService<Session> sessionService)
+    public ImagesController(ImageService imageService, ISessionService<Session> sessionService, IOptions<AppSettings> options)
     {
         this.imageService = imageService;
         this.sessionService = sessionService;
+        this.configuration = options.Value;
+    }
+
+    [HttpGet]
+    public async Task<ListResponse<ImageDto>> ListImages([FromQuery] ListImagesQuery imagesQuery)
+    {
+        imagesQuery.ResultsOnPage ??= configuration.DefaultResultsPerPage;
+        if (imagesQuery.ResultsOnPage > configuration.MaxResultsPerPage)
+        {
+            imagesQuery.ResultsOnPage = configuration.MaxResultsPerPage;
+        }
+
+        var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
+
+        return await imageService.ListImagesAsync(imagesQuery, user);
     }
 
     [HttpGet("{id:long}")]
@@ -85,11 +102,5 @@ public class ImagesController : ControllerBase
         }
         
         await imageStream.CopyToAsync(Response.Body);
-    }
-    
-    [Authorize]
-    public IActionResult Index()
-    {
-        return NoContent();
     }
 }

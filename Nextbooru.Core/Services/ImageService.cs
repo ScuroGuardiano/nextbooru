@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MimeTypes;
+using Nextbooru.Auth.Models;
 using Nextbooru.Core.Dto;
 using Nextbooru.Core.Exceptions;
 using Nextbooru.Core.Models;
@@ -26,6 +28,51 @@ public class ImageService
         this.configuration = options.Value;
     }
 
+    public async Task<ListResponse<ImageDto>> ListImagesAsync(ListImagesQuery request, User? user)
+    {
+        ArgumentNullException.ThrowIfNull(request.ResultsOnPage);
+
+        var toSkip = (request.Page - 1) * request.ResultsOnPage.Value;
+        var query = dbContext.Images.Include(i => i.Tags).AsQueryable();
+        
+        Console.WriteLine(user?.Username);
+        
+        if (user is null)
+        {
+            query = query.Where(i => i.IsPublic == true);
+        }
+        
+        if (user is not null && !user.IsAdmin)
+        {
+            query = query.Where(i => i.IsPublic == true || i.UploadedById == user.Id);
+        }
+        
+        if (request.TagsArray.Length > 0)
+        {
+            // query = query.Where(
+            //     i => request.TagsArray.AsQueryable().All(rawTag => i.Tags.Exists(t => t.Name == rawTag))
+            //     );
+            // TODO: Propably inefficent, test some versions, find a better way uwu
+            query = query.Where(i => i.Tags.Count(t => request.TagsArray.Contains(t.Name)) == request.TagsArray.Length);
+        }
+        
+        var total = await query.CountAsync();
+        var results = await query.Skip(toSkip)
+            .Take(request.ResultsOnPage.Value)
+            .OrderByDescending(i => i.CreatedAt)
+            .ToListAsync();
+        var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage.Value);
+
+        return new ListResponse<ImageDto>()
+        {
+            Data = results.Select(ImageDto.FromImageModel).ToList(),
+            Page = request.Page,
+            TotalPages = totalPages,
+            TotalRecords = total,
+            RecordsPerPage = request.ResultsOnPage.Value
+        };
+    }
+    
     public async Task<Image?> GetImageAsync(long id, bool includeTags = false, bool includeUploadedBy = false)
     {
         var query = dbContext.Images.Where(i => i.Id == id);

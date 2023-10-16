@@ -33,6 +33,10 @@ public class AppSettings
     /// If image is not valid then error is returned.
     /// </summary>
     public bool StrictImageChecks { get; set; }
+
+    public int DefaultResultsPerPage { get; set; } = 20;
+
+    public int MaxResultsPerPage { get; set; } = 100;
     
     // Subtypes
 
