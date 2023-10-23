@@ -1,19 +1,20 @@
 services:
   postgres:
-    image: "postgres:15-alpine"
+    image: "postgres:16-alpine"
     ports:
       - "127.0.0.1:9678:5432"
+    shm_size: 2gb
     restart: always
     environment:
-      - POSTGRES_PASSWORD=hornyoniichan
+      - POSTGRES_PASSWORD=change_me_plz
       - PGDATA=/var/lib/postgresql/data/pgdata
-      - POSTGRES_DB=horny
+      - POSTGRES_DB=nextbooru
     volumes:
-      - hornypgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
   adminer:
     image: adminer
     restart: always
     ports:
       - "127.0.0.1:9679:8080"
 volumes:
-  hornypgdata:
+  pgdata:
