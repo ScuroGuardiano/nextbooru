@@ -27,3 +27,8 @@ If you want to use your own postgres you need to change database config in `apps
 ## LICENSE
 All files in this repository are licenced under GNU AFFERO GENERAL PUBLIC LICENSE version 3  
 Full license text is available in `LICENSE` file.
+
+---
+Thanks JetBrains for letting me to [use their products for free](https://www.jetbrains.com/community/opensource) to develop Nextbooru <3
+
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
