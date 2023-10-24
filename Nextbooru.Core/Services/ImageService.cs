@@ -35,8 +35,6 @@ public class ImageService
         var toSkip = (request.Page - 1) * request.ResultsOnPage.Value;
         var query = dbContext.Images.Include(i => i.Tags).AsQueryable();
         
-        Console.WriteLine(user?.Username);
-        
         if (user is null)
         {
             query = query.Where(i => i.IsPublic == true);
@@ -49,18 +47,23 @@ public class ImageService
         
         if (request.TagsArray.Length > 0)
         {
-            // query = query.Where(
-            //     i => request.TagsArray.AsQueryable().All(rawTag => i.Tags.Exists(t => t.Name == rawTag))
-            //     );
-            // TODO: Propably inefficent, test some versions, find a better way uwu
-            query = query.Where(i => i.Tags.Count(t => request.TagsArray.Contains(t.Name)) == request.TagsArray.Length);
+            // TODO: [MINOR PERFORMANCE ISSUE] Can't we get this from somewhere else?
+            var tagsIdsFromQuery = await dbContext.Tags
+                .Where(t => request.TagsArray.Contains(t.Name))
+                .Select(t => t.Id)
+                .ToListAsync();
+            
+            query = query.Where(i => tagsIdsFromQuery.All(id => i.TagsArr.Contains(id)));
         }
         
+        // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applies is unacceptably slow.
         var total = await query.CountAsync();
+        
         var results = await query.Skip(toSkip)
             .Take(request.ResultsOnPage.Value)
-            .OrderByDescending(i => i.CreatedAt)
+            .OrderByDescending(i => i.Id)
             .ToListAsync();
+        
         var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage.Value);
 
         return new ListResponse<ImageDto>()
@@ -109,15 +112,6 @@ public class ImageService
     {
         return await mediaStore.GetFileStreamAsync(fileId);
     }
-    
-    public async Task<List<Image>> ListRecentlyAddedImagesAsync()
-    {
-        return await dbContext.Images
-            .Where(x => x.IsPublic)
-            .OrderBy(x => x.CreatedAt)
-            .Take(20)
-            .ToListAsync();
-    }
 
     public async Task<Image> AddImageAsync(UploadFileRequest request, Guid userId)
     {
@@ -133,7 +127,7 @@ public class ImageService
 
         await using var fileStream = request.File.OpenReadStream();
         var storeFileId = await mediaStore.SaveFileAsync(fileStream, fileExtension);
-        var tags = await GetTagsFromRequestAsync(request);
+        var tags = await GetOrAddTagsFromRequestAsync(request);
 
         var image = new Image()
         {
@@ -146,7 +140,8 @@ public class ImageService
             Width = width,
             Height = height,
             SizeInBytes = size,
-            Tags = tags
+            Tags = tags,
+            TagsArr = tags.Select(t => t.Id).ToList()
         };
 
         dbContext.Add(image);
@@ -155,7 +150,7 @@ public class ImageService
         return image;
     }
 
-    private async Task<List<Tag>> GetTagsFromRequestAsync(UploadFileRequest request)
+    private async Task<List<Tag>> GetOrAddTagsFromRequestAsync(UploadFileRequest request, bool shouldIncreaseImagesCount = false)
     {
         var rawTags = request.Tags.Split(" ").Select(t => t.ToLower());
 
@@ -167,9 +162,21 @@ public class ImageService
         {
             if (!tags.Exists(t => t.Name == rawTag))
             {
-                tags.Add(new Tag() { Name = rawTag });
+                var tag = new Tag() { Name = rawTag };
+                tags.Add(tag);
+                dbContext.Add(tag);
             }
         }
+
+        if (shouldIncreaseImagesCount)
+        {
+            foreach (var tag in tags)
+            {
+                tag.ImagesCount++;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
 
         return tags;
     }

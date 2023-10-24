@@ -25,7 +25,9 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(GetDbConnectionString());
+        optionsBuilder
+            .UseNpgsql(GetDbConnectionString())
+            .UseSnakeCaseNamingConvention();
     }
 
     private void OnEntityStateChanged(object? sender, EntityStateChangedEventArgs e)
@@ -47,8 +49,20 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
             .IsRequired();
 
         modelBuilder.Entity<Image>()
+            .HasIndex(i => i.UploadedById)
+            .IsUnique(false);
+
+        modelBuilder.Entity<Image>()
             .HasMany(i => i.Tags)
             .WithMany(t => t.Images);
+
+        modelBuilder.Entity<Image>()
+            .HasIndex(i => i.TagsArr)
+            .HasMethod("GIN");
+
+        modelBuilder.Entity<Tag>()
+            .HasIndex(t => t.Name)
+            .IsUnique();
         
         var entitiesWithDate = modelBuilder.Model.GetEntityTypes()
             .Where(type => type.ClrType.IsSubclassOf(typeof(BaseEntity)))

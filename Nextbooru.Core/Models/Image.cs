@@ -1,3 +1,4 @@
+using System.Numerics;
 using Nextbooru.Auth.Models;
 using Nextbooru.Shared;
 
@@ -28,6 +29,8 @@ public class Image : BaseEntity
     public long SizeInBytes { get; set; }
     
     public List<Tag> Tags { get; set; } = new();
+
+    public List<int> TagsArr { get; set; } = new();
     
     public User? UploadedBy { get; set; }
     

@@ -19,6 +19,7 @@ builder.Services.AddOptions<AppSettings>()
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddSGAuthentication<AppDbContext>();
 
+
 builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
 builder.Services.AddScoped<ImageService>();
 
