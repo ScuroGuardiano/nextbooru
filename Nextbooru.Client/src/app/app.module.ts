@@ -5,14 +5,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
-import { NgxsModule } from '@ngxs/store';
+import { NgxsModule, Store } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
-import { AuthState } from './store/state/auth.state';
+import { AUTH_STATE_TOKEN, AuthState } from './store/state/auth.state';
 import { httpInterceptorProviders } from './interceptors/interceptors';
 import { AuthService } from './services/auth.service';
 
-function appInitFactory(authService: AuthService) {
-  return () => authService.checkSessionValidity(true);
+function appInitFactory(authService: AuthService, store: Store) {
+  return () => {
+    if (store.selectSnapshot(AUTH_STATE_TOKEN).isLoggedIn) {
+      authService.checkSessionValidity(true);
+    }
+  }
 }
 
 @NgModule({
@@ -38,7 +42,7 @@ function appInitFactory(authService: AuthService) {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: appInitFactory,
-      deps: [AuthService]
+      deps: [AuthService, Store]
     }
   ],
   bootstrap: [AppComponent]

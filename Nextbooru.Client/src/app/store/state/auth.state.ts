@@ -111,7 +111,6 @@ export class AuthState {
 
   @Action(SilentLogout)
   private silentLogout(ctx: Context) {
-    console.log("AHHH, FUCK!", ctx.getState());
     return this.authService.logout()
     .pipe(
       tap({

@@ -27,8 +27,5 @@ export class Logout {
  * The same as Logout but won't redirect user to log in page and won't set `logoutLoading` state to true.
  */
 export class SilentLogout {
-  constructor() {
-    console.log("AHHH I AM CUMMING~");
-  }
   static readonly type = `[Auth] Silent Logout`
 }

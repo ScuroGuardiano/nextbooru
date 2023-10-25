@@ -22,8 +22,7 @@ export class LoadingIndicatorService {
 
   public get loading$() {
     return this._loading$.pipe(
-      distinctUntilChanged(),
-      tap(x => console.log(x)),
+      distinctUntilChanged()
     );
   }
 
