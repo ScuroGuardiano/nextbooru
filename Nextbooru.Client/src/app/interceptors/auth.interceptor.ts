@@ -4,12 +4,15 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpContextToken
 } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { BackendEndpoints } from '../backend/backend-enpoints';
 import { Store } from '@ngxs/store';
-import { Logout } from '../store/actions/auth.actions';
+import { Logout, SilentLogout } from '../store/actions/auth.actions';
+
+export const SILENT_LOGOUT_ON_401 = new HttpContextToken(() => false);
 
 /**
  *  Adds `withCredentials: true` option and redirects to `/auth`
@@ -31,7 +34,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(newReq)
       .pipe(
         tap({
-          error: err => err instanceof HttpErrorResponse ?? this.handleError(err)
+          error: err => err instanceof HttpErrorResponse && this.handleError(err, request.context.get(SILENT_LOGOUT_ON_401))
         })
       );
   }
@@ -48,9 +51,9 @@ export class AuthInterceptor implements HttpInterceptor {
     });
   }
 
-  private handleError(err: HttpErrorResponse) {
+  private handleError(err: HttpErrorResponse, silentLogout = false) {
     if (err.status && err.status == 401) {
-      this.store.dispatch(new Logout());
+      this.store.dispatch(silentLogout ? new SilentLogout() : new Logout());
     }
   }
 }

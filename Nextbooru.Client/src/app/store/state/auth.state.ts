@@ -3,7 +3,7 @@ import { Action, State, StateContext, StateToken } from "@ngxs/store";
 import { finalize, retry, tap } from "rxjs";
 import { AuthService } from "src/app/services/auth.service";
 import { ErrorService } from "src/app/services/error.service";
-import { Login, Logout, Register } from "../actions/auth.actions";
+import { Login, Logout, Register, SilentLogout } from "../actions/auth.actions";
 import { LoggerService } from "src/app/services/logger.service";
 import { Router } from "@angular/router";
 import { ResetState, ResettableState } from "../resettable-state/resettable-state";
@@ -107,5 +107,22 @@ export class AuthState {
           this.ngZone.run(() => this.router.navigateByUrl("/auth"));
         })
       )
+  }
+
+  @Action(SilentLogout)
+  private silentLogout(ctx: Context) {
+    console.log("AHHH, FUCK!", ctx.getState());
+    return this.authService.logout()
+    .pipe(
+      tap({
+        error: err => {
+          this.logger.error("Logout request failed.")
+          this.logger.error(err);
+        }
+      }),
+      finalize(() => {
+        ctx.dispatch(new ResetState());
+      })
+    )
   }
 }

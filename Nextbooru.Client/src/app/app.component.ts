@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { LoadingIndicatorService } from './services/loading-indicator.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import { LoadingIndicatorService } from './services/loading-indicator.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(router: Router, loadingIndicatorService: LoadingIndicatorService) {
+  constructor(router: Router, loadingIndicatorService: LoadingIndicatorService, private authService: AuthService) {
     router.events.subscribe(e => {
       if (e instanceof NavigationStart) {
         loadingIndicatorService.addLoading();
