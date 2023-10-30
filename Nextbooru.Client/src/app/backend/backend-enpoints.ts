@@ -12,5 +12,9 @@ export const BackendEndpoints = {
     logout: `${apiUrl}/auth/logout`,
     currentSession: `${apiUrl}/auth/currentSession`
   },
-  upload: `${apiUrl}/upload`
+  upload: `${apiUrl}/upload`,
+  images: {
+    list: `${apiUrl}/images`,
+    get: (id: number) => `${apiUrl}/images/${id}`
+  }
 } as const;

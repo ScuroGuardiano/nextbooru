@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Nextbooru.Auth.Models;
@@ -49,7 +48,7 @@ public class ImagesController : ControllerBase
 
         if (image.IsPublic)
         {
-            return new JsonResult(ImageDto.FromImageModel(image));
+            return new JsonResult(ImageDto.FromImageModel(image, imageService.GetUrlForImage(image)));
         }
         
         // If image is not public only uploader and admin can see it
@@ -60,7 +59,7 @@ public class ImagesController : ControllerBase
             return new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
         
-        return new JsonResult(ImageDto.FromImageModel(image));
+        return new JsonResult(ImageDto.FromImageModel(image, imageService.GetUrlForImage(image)));
     }
 
     /// <summary>
@@ -97,7 +96,7 @@ public class ImagesController : ControllerBase
         {
             Response.ContentType = "text/html";
             Response.StatusCode = StatusCodes.Status418ImATeapot;
-            await Response.WriteAsync("<center><h1>418 - I'm a Teapot</h1><hr><p>Nextbooru refuses to show you desired image because it is, permanently, a teapot.</p></center>");
+            await Response.WriteAsync("<center><h1>418 - I'm a Teapot</h1><hr><p>Nextbooru refuses to show your desired image because it is, permanently, a teapot.</p></center>");
             return;
         }
         

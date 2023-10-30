@@ -7,4 +7,9 @@ public class ListResponse<T>
     public int TotalPages { get; init; }
     public int TotalRecords { get; init; }
     public int RecordsPerPage { get; init; }
+    
+    /// <summary>
+    /// Will be used for key based pagination.
+    /// </summary>
+    public long LastRecordId { get; init; }
 }

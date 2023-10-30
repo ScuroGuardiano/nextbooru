@@ -10,6 +10,7 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { AUTH_STATE_TOKEN, AuthState } from './store/state/auth.state';
 import { httpInterceptorProviders } from './interceptors/interceptors';
 import { AuthService } from './services/auth.service';
+import { PostsState } from './store/state/posts.state';
 
 function appInitFactory(authService: AuthService, store: Store) {
   return () => {
@@ -29,7 +30,7 @@ function appInitFactory(authService: AuthService, store: Store) {
     LayoutModule,
     HttpClientModule,
     NgxsModule.forRoot(
-      [ AuthState ],
+      [ AuthState, PostsState ],
       { developmentMode: isDevMode() }
     ),
     NgxsStoragePluginModule.forRoot({

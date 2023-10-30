@@ -1,3 +1,5 @@
+import { HttpParams } from "@angular/common/http";
+
 export interface LoginRequest {
   username: string;
   password: string;
@@ -29,4 +31,44 @@ export interface ApiErrorResponse {
   message?: string;
   errorClrType?: string;
   errorCode?: string;
+}
+
+export interface BasicUserInfo {
+  username: string;
+  displayName: string;
+  isAdmin: boolean;
+}
+
+export interface ListImagesQuery {
+  page?: number;
+  resultsOnPage?: number;
+  tags?: string;
+}
+
+export interface TagDto {
+  name: string;
+  tagType: string;
+}
+
+export interface ImageDto {
+  id: number;
+  url: string;
+  title?: string;
+  source?: string;
+  contentType?: string;
+  extension?: string;
+  width: number;
+  height: number;
+  sizeInBytes: number;
+  tags?: TagDto[];
+  uploadedBy?: BasicUserInfo;
+}
+
+export interface ListResponse<T> {
+  data: T[];
+  page: number;
+  totalPages: number;
+  totalRecords: number;
+  recordsPerPage: number;
+  lastRecordId: number;
 }

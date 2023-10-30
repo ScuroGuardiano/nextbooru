@@ -20,6 +20,11 @@ const routes: Routes = [
       .then(c => c.UploadPageComponent)
   },
   {
+    path: "posts",
+    loadComponent: () => import("./pages/posts-page/posts-page.component")
+      .then(c => c.PostsPageComponent)
+  },
+  {
     path: "settings",
     loadComponent: () => import("./pages/settings-page/settings-page.component")
       .then(c => c.SettingsPageComponent),
@@ -28,7 +33,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { bindToComponentInputs: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

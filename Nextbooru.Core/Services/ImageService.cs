@@ -28,6 +28,12 @@ public class ImageService
         this.configuration = options.Value;
     }
 
+    public string GetUrlForImage(Image image)
+    {
+        // TODO: This HAS to be changed, it's terrible.
+        return $"/api/images/{image.Id}{image.Extension}";
+    }
+    
     public async Task<ListResponse<ImageDto>> ListImagesAsync(ListImagesQuery request, User? user)
     {
         ArgumentNullException.ThrowIfNull(request.ResultsOnPage);
@@ -59,20 +65,22 @@ public class ImageService
         // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applies is unacceptably slow.
         var total = await query.CountAsync();
         
-        var results = await query.Skip(toSkip)
-            .Take(request.ResultsOnPage.Value)
+        var results = await query
             .OrderByDescending(i => i.Id)
+            .Skip(toSkip)
+            .Take(request.ResultsOnPage.Value)
             .ToListAsync();
         
         var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage.Value);
 
         return new ListResponse<ImageDto>()
         {
-            Data = results.Select(ImageDto.FromImageModel).ToList(),
+            Data = results.Select(i => ImageDto.FromImageModel(i, GetUrlForImage(i))).ToList(),
             Page = request.Page,
             TotalPages = totalPages,
             TotalRecords = total,
-            RecordsPerPage = request.ResultsOnPage.Value
+            RecordsPerPage = request.ResultsOnPage.Value,
+            LastRecordId = results.Last().Id
         };
     }
     

@@ -2,6 +2,10 @@
   <img src="/assets/aqua-min.png" />
   <p>Hewwo senpai, let's search for some hentai!</p>
   <input type="search" [formControl]="searchTerm"><br>
-  <button class="btn btn-primary">Search</button>
+  <button
+    class="btn btn-primary"
+    [disabled]="searchTerm.invalid"
+    (click)="search()"
+  >Search</button>
   <p>Serving 0 images</p>
 </div>
