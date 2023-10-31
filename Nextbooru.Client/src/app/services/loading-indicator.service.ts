@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, distinctUntilChanged, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadingIndicatorService {
-  constructor() { }
+  constructor(private zone: NgZone) { }
 
   private loadingsInProgress = 0;
   private _loading$ = new BehaviorSubject(false);
@@ -31,6 +31,6 @@ export class LoadingIndicatorService {
   }
 
   private updateSubject() {
-    this._loading$.next(this.isLoading);
+    this.zone.run(() => this._loading$.next(this.isLoading));
   }
 }

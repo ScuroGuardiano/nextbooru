@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { debounceTime } from 'rxjs';
 import { LoadingIndicatorService } from 'src/app/services/loading-indicator.service';
 
 @Component({
@@ -12,5 +13,7 @@ import { LoadingIndicatorService } from 'src/app/services/loading-indicator.serv
 export class GlobalLoadingIndicatorComponent {
   constructor(private loadingIndicatorService: LoadingIndicatorService) {}
 
-  loading$ = this.loadingIndicatorService.loading$;
+  loading$ = this.loadingIndicatorService.loading$.pipe(
+    debounceTime(100)
+  );
 }
