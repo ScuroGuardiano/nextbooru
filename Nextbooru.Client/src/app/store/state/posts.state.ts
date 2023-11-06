@@ -4,18 +4,12 @@ import { Injectable } from "@angular/core";
 import { LoadPosts } from "../actions/posts.actions";
 import { ImagesService } from "src/app/services/images.service";
 import { tap } from "rxjs";
+import { ImageDto } from "src/app/backend/backend-types";
 
 export const POSTS_STATE_TOKEN = new StateToken<PostsStateModel>('posts');
 
-export interface IPostListElement {
-  id: number;
-  title?: string;
-  tags: string[];
-  imgSrc: string;
-}
-
 export interface PostsStateModel {
-  posts: IPostListElement[];
+  posts: ImageDto[];
   tags?: string;
   page: number;
   totalPages?: number;
@@ -55,12 +49,7 @@ export class PostsState {
     }).pipe(
       tap(res => {
         ctx.patchState({
-          posts: res.data.map(record => ({
-            id: record.id,
-            title: record.title,
-            tags: record.tags?.map(t => t.name) ?? [],
-            imgSrc: record.url
-          })),
+          posts: res.data,
           page: res.page || page,   // With key-based pagination page will be set on 0 here.
           postsOnPage: res.recordsPerPage,
           totalPages: res.totalPages,

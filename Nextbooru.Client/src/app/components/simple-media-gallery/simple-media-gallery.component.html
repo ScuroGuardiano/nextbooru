@@ -1,0 +1,7 @@
+<ul>
+  <li *ngFor="let el of mediaList" #mediaContainer>
+    <a [routerLink]="el.imagePageUrl" class="unstyled-link">
+      <img [src]="el.getImageUrl(mediaContainer.offsetWidth, 'thumbnail')" [title]="elementHoverText(el)">
+    </a>
+  </li>
+</ul>

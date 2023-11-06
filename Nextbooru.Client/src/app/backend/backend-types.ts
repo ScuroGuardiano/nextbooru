@@ -60,6 +60,7 @@ export interface ImageDto {
   width: number;
   height: number;
   sizeInBytes: number;
+  isPublic: boolean;
   tags?: TagDto[];
   uploadedBy?: BasicUserInfo;
 }
