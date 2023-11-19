@@ -8,12 +8,13 @@ using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Formats.Gif;
+using Nextbooru.Core.Exceptions;
 
 public class ImageConvertionOptions
 {
     public int Width { get; set; }
     public int Quality { get; set; }
-    public required String Format { get; set; }
+    public required string Format { get; set; }
 }
 
 public class ImageConvertionService
@@ -30,7 +31,7 @@ public class ImageConvertionService
 
         try
         {
-            if (options.Width != 0)
+            if (options.Width != 0 && options.Width < input.Width)
             {
                 resultImage = input.Clone(x => x.Resize(options.Width, 0));
             }
@@ -77,7 +78,7 @@ public class ImageConvertionService
                     break;
 
                 default:
-                    throw new FormatException($"Format {options.Format} is not supported.");
+                    throw new UnsupportedMediaTypeException($"Format {options.Format} is not supported.");
             }
 
             await resultImage.SaveAsync(output, encoder);

@@ -41,6 +41,13 @@ public class ImageService
         return $"/api/images/{image.Id}{image.Extension}";
     }
 
+    public string GetThumbnailUrl(Image image)
+    {   
+        var format = configuration.Images.Thumbnails.Format;
+        // TODO: This HAS to be changed, it's terrible.
+        return $"/api/images/{image.Id}.{format}";
+    }
+
     public async Task<ListResponse<ImageDto>> ListImagesAsync(ListImagesQuery request, User? user)
     {
         ArgumentNullException.ThrowIfNull(request.ResultsOnPage);
@@ -82,7 +89,7 @@ public class ImageService
 
         return new ListResponse<ImageDto>()
         {
-            Data = results.Select(i => ImageDto.FromImageModel(i, GetUrlForImage(i))).ToList(),
+            Data = results.Select(i => ImageDto.FromImageModel(i, GetUrlForImage(i), GetThumbnailUrl(i))).ToList(),
             Page = request.Page,
             TotalPages = totalPages,
             TotalRecords = total,
@@ -106,6 +113,60 @@ public class ImageService
         }
 
         return await query.FirstOrDefaultAsync();
+    }
+
+    /// <summary>
+    /// Returns image thumbnail stream with stored thumbnail having widths closes to desired.
+    /// If no thumbnail is found in store it will convert original image in flight and produce warning
+    /// as it's very CPU intensive task and should be avoided.
+    /// </summary>
+    /// <exception cref="UnsupportedMediaTypeException">
+    /// When thumbnail format is not supported.
+    /// </exception> 
+    /// <returns></returns>
+    public async Task<(Stream stream, string contentType)> GetImageThumbnailAsync(long imageId, int width, string format)
+    {
+        var thumbnailVariant = await dbContext.ImageVariants
+            .Where(iv => iv.Extension == "." + format && iv.ImageId == imageId)
+            .OrderBy(iv => Math.Abs(width - iv.Width))
+            .FirstOrDefaultAsync();
+        
+        if (thumbnailVariant is not null)
+        {
+            return (
+                await mediaStore.GetFileStreamAsync(thumbnailVariant.StoreFileId),
+                thumbnailVariant.ContentType ?? MimeTypeMap.GetMimeType("." + format)
+            );
+        }
+
+        if (!format.Equals(configuration.Images.Thumbnails.Format, StringComparison.CurrentCultureIgnoreCase))
+        {
+            throw new UnsupportedMediaTypeException($"Format {format} for thumbnail is not supported.");
+        }
+
+        logger.LogWarning(
+            "Stored thumbnail for {imageId} was not found. Thumbnail will be generated in flight. This should be avoided as it's very CPU intensive, review you configuration, make sure you set thumbnails width to generate then run thumbnails generation task.",
+            imageId
+        );
+
+        await using var originalImageStream = await GetImageStreamByIdAsync(imageId);
+        if (originalImageStream is null)
+        {
+            throw new NotFoundException(imageId, "Image");
+        }
+
+        var ms = new MemoryStream();
+        await imageConvertionService.ConvertImageAsync(
+            originalImageStream,
+            ms,
+            new ()
+            {
+                Format = format.ToLower(),
+                Quality = configuration.Images.Thumbnails.Quality,
+                Width = width
+            }
+        );
+        return (ms, MimeTypeMap.GetMimeType("." + format));
     }
 
     public async Task<Stream?> GetImageStreamByIdAsync(long id)
@@ -185,43 +246,6 @@ public class ImageService
     }
 
     public async Task<Image> AddImageAsync(UploadFileRequest request, Guid userId)
-    {
-        var fileExtension = MimeTypeMap.GetExtension(request.File.ContentType, false);
-
-        if (!configuration.AllowedUploadExtensions.Contains(fileExtension))
-        {
-            throw new NotAllowedFileTypeException(fileExtension, request.File.ContentType);
-        }
-
-        var (width, height) = await IdentifyAsync(request);
-        var size = request.File.Length;
-
-        await using var fileStream = request.File.OpenReadStream();
-        var storeFileId = await mediaStore.SaveFileAsync(fileStream, fileExtension);
-        var tags = await GetOrAddTagsFromRequestAsync(request);
-
-        var image = new Image()
-        {
-            StoreFileId = storeFileId,
-            Title = request.Title,
-            Source = request.Source,
-            ContentType = request.File.ContentType,
-            Extension = fileExtension,
-            UploadedById = userId,
-            Width = width,
-            Height = height,
-            SizeInBytes = size,
-            Tags = tags,
-            TagsArr = tags.Select(t => t.Id).ToList()
-        };
-
-        dbContext.Add(image);
-        await dbContext.SaveChangesAsync();
-
-        return image;
-    }
-
-    public async Task<Image> AddImageV2Async(UploadFileRequest request, Guid userId)
     {
         var fileExtension = MimeTypeMap.GetExtension(request.File.ContentType, false);
 

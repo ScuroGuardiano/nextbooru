@@ -1,6 +1,6 @@
 import { ImageDto } from "src/app/backend/backend-types";
 import { IMediaGalleryElement } from "../interfaces/i-media-gallery-element";
-import { MediaMode } from "../enums/media-mode.enum";
+import { MEDIA_MODE, MediaMode } from "../enums/media-mode.enum";
 
 export interface MediaGalleryElementInit {
   title?: string;
@@ -10,6 +10,7 @@ export interface MediaGalleryElementInit {
   isPublic: boolean;
   imagePageUrl: string;
   imageUrl: string;
+  thumbnailUrl: string;
 }
 
 export default class MediaGalleryElement implements IMediaGalleryElement {
@@ -21,6 +22,7 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
     this.isPublic = init.isPublic;
     this.imagePageUrl = init.imagePageUrl;
     this.imageUrl = init.imageUrl;
+    this.thumbnailUrl = init.thumbnailUrl;
   }
 
   static fromImageDto(imageDto: ImageDto) {
@@ -31,7 +33,8 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
       height: imageDto.height,
       isPublic: imageDto.isPublic,
       imagePageUrl: `/posts/${imageDto.id}`,
-      imageUrl: imageDto.url
+      imageUrl: imageDto.url,
+      thumbnailUrl: imageDto.thumbnailUrl
     });
   }
 
@@ -43,8 +46,12 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
   imagePageUrl: string;
   getImageUrl(width: number, mode?: MediaMode): string {
     const modeParam = mode ? `&mode=${mode}` : "";
+    if (mode === MEDIA_MODE.THUMBNAIL) {
+      return `${this.thumbnailUrl}?w=${width}${modeParam}`;
+    }
     return `${this.imageUrl}?w=${width}${modeParam}`;
   }
 
   private imageUrl: string;
+  private thumbnailUrl: string;
 }
