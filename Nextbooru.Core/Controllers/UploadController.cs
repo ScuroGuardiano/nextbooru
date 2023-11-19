@@ -26,7 +26,7 @@ public class UploadController : ControllerBase
     public async Task<UploadResponse> Upload([FromForm] UploadFileRequest body)
     {
         var userId = sessionService.GetCurrentSessionFromHttpContext()!.UserId;
-        var image = await imageService.AddImageAsync(body, userId);
+        var image = await imageService.AddImageV2Async(body, userId);
 
         HttpContext.Response.StatusCode = StatusCodes.Status201Created;
         

@@ -13,6 +13,8 @@ public class Image : BaseEntity
     /// </summary>
     [Required]
     public required string StoreFileId { get; set; }
+
+    public List<ImageVariant> Variants { get; set; } = new();
     
     public string? Title { get; set; }
 

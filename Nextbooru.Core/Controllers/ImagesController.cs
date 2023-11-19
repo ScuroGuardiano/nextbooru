@@ -72,7 +72,7 @@ public class ImagesController : ControllerBase
     /// <param name="extension"></param>
     /// <exception cref="NotFoundException"></exception>
     [HttpGet("{id:long}.{extension}")]
-    public async Task GetImageFile([FromRoute] long id, [FromRoute] string extension)
+    public async Task GetImageFile([FromRoute] long id, [FromRoute] string extension, [FromQuery] GetImageFileQuery query)
     {
         var image = await imageService.GetImageAsync(id, includeUploadedBy: true);
         if (image is null)
@@ -80,7 +80,12 @@ public class ImagesController : ControllerBase
             throw new NotFoundException(id, "Image");
         }
 
-        await using var imageStream = await imageService.GetImageStreamByFileIdAsync(image.StoreFileId);
+        Stream? imageStream = await imageService.GetImageStreamByIdAsync(image.Id);
+        
+        if (query.W is not null) {
+            imageStream = await imageService.GetResizedImageStreamByIdAsync(image.Id, query.W.Value, query.Mode ?? "", extension);
+        }
+
 
         Response.ContentType = image.ContentType;
         

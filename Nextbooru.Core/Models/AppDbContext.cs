@@ -12,6 +12,7 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
 
 
     public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<ImageVariant> ImageVariants { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
 
@@ -59,6 +60,12 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
         modelBuilder.Entity<Image>()
             .HasIndex(i => i.TagsArr)
             .HasMethod("GIN");
+
+        modelBuilder.Entity<ImageVariant>()
+            .HasOne(iv => iv.Image)
+            .WithMany(i => i.Variants)
+            .HasForeignKey(iv => iv.ImageId)
+            .IsRequired();
 
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
