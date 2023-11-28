@@ -22,4 +22,11 @@ public static class AppConstants
             return null;
         }
     }
+
+    public static class ImageModes
+    {
+        public const string Thumbnail = "thumbnail";
+        public const string Convert = "convert";
+        public const string Raw = "raw";
+    }
 }

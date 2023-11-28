@@ -4,6 +4,7 @@ using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto;
 using Nextbooru.Core.Exceptions;
+using Nextbooru.Core.Models;
 using Nextbooru.Core.Services;
 
 namespace Nextbooru.Core.Controllers;
@@ -48,7 +49,11 @@ public class ImagesController : ControllerBase
 
         if (image.IsPublic)
         {
-            return new JsonResult(ImageDto.FromImageModel(image, imageService.GetUrlForImage(image)));
+            return new JsonResult(ImageDto.FromImageModel(
+                image,
+                imageService.GetUrlForImage(image),
+                imageService.GetThumbnailUrl(image)
+            ));
         }
         
         // If image is not public only uploader and admin can see it
@@ -59,7 +64,11 @@ public class ImagesController : ControllerBase
             return new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
         
-        return new JsonResult(ImageDto.FromImageModel(image, imageService.GetUrlForImage(image)));
+        return new JsonResult(ImageDto.FromImageModel(
+            image,
+            imageService.GetUrlForImage(image),
+            imageService.GetThumbnailUrl(image)
+        ));
     }
 
     /// <summary>
@@ -71,8 +80,8 @@ public class ImagesController : ControllerBase
     /// <param name="id"></param>
     /// <param name="extension"></param>
     /// <exception cref="NotFoundException"></exception>
-    [HttpGet("{id:long}.{extension}")]
-    public async Task GetImageFile([FromRoute] long id, [FromRoute] string extension)
+    [HttpGet("{id:long}.{format}")]
+    public async Task GetImageFile([FromRoute] long id, [FromRoute] string format, [FromQuery] GetImageFileQuery query)
     {
         var image = await imageService.GetImageAsync(id, includeUploadedBy: true);
         if (image is null)
@@ -80,26 +89,48 @@ public class ImagesController : ControllerBase
             throw new NotFoundException(id, "Image");
         }
 
-        await using var imageStream = await imageService.GetImageStreamByFileIdAsync(image.StoreFileId);
+        if (!image.IsPublic)
+        {
+            // If image is not public only uploader and admin can see it
+            var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
+            if (user is null || (!user.IsAdmin && !user.Id.Equals(image.UploadedById)))
+            {
+                Response.ContentType = "text/html";
+                Response.StatusCode = StatusCodes.Status418ImATeapot;
+                await Response.WriteAsync("<center><h1>418 - I'm a Teapot</h1><hr><p>Nextbooru refuses to show your desired image because it is, permanently, a teapot.</p></center>");
+                return;
+            }
+        }
 
+        switch (query.Mode.ToLower())
+        {
+            case AppConstants.ImageModes.Thumbnail:
+                await SendThumbnailImage(image, format, query.W);
+                return;
+            case AppConstants.ImageModes.Convert:
+                // TODO
+                throw new NotImplementedException();
+            default:
+                await SendOriginalImage(image);
+                return;
+        }
+    }
+
+    private async Task SendOriginalImage(Image image)
+    {
         Response.ContentType = image.ContentType;
-        
-        if (image.IsPublic)
-        {
-            await imageStream.CopyToAsync(Response.Body);
-            return;
-        }
-        
-        // If image is not public only uploader and admin can see it
-        var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
-        if (user is null || (!user.IsAdmin && !user.Id.Equals(image.UploadedById)))
-        {
-            Response.ContentType = "text/html";
-            Response.StatusCode = StatusCodes.Status418ImATeapot;
-            await Response.WriteAsync("<center><h1>418 - I'm a Teapot</h1><hr><p>Nextbooru refuses to show your desired image because it is, permanently, a teapot.</p></center>");
-            return;
-        }
-        
+        using Stream? imageStream = await imageService.GetImageStreamByFileIdAsync(image.StoreFileId);
         await imageStream.CopyToAsync(Response.Body);
+    }
+
+    private async Task SendThumbnailImage(Image image, string format, int width)
+    {
+        var (stream, contentType) = await imageService.GetImageThumbnailAsync(image.Id, width, format);
+        Console.WriteLine(stream.Length);
+        using (stream)
+        {
+            Response.ContentType = contentType;
+            await stream.CopyToAsync(Response.Body);
+        }
     }
 }

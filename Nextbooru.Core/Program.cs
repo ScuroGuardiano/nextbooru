@@ -21,6 +21,7 @@ builder.Services.AddSGAuthentication<AppDbContext>();
 
 
 builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
+builder.Services.AddSingleton<ImageConvertionService>();
 builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllers(options => {
@@ -62,6 +63,8 @@ app.MapControllers();
 
 try
 { 
+    var config = app.Services.GetService<IOptions<AppSettings>>().Value;
+    Console.WriteLine(String.Join(", ", config.Images.Thumbnails.Widths.Select(x => x.ToString())));
     app.Run();
 }
 catch (Exception ex)

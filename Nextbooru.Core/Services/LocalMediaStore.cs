@@ -10,7 +10,7 @@ public class LocalMediaStore : IMediaStore
 
     public LocalMediaStore(IOptions<AppSettings> options)
     {
-        this.configuration = options.Value;
+        configuration = options.Value;
     }
     
     public async Task<string> SaveFileAsync(Stream fileStream, string fileExtension)

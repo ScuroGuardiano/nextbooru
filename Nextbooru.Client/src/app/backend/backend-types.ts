@@ -53,6 +53,7 @@ export interface TagDto {
 export interface ImageDto {
   id: number;
   url: string;
+  thumbnailUrl: string;
   title?: string;
   source?: string;
   contentType?: string;

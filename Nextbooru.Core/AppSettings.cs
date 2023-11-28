@@ -1,6 +1,5 @@
 namespace Nextbooru.Core;
 
-using SGLibCS.Ms;
 using SGLibCS.Utils.Validation;
 
 public class AppSettings
@@ -20,13 +19,17 @@ public class AppSettings
     [Required, ValidateObject]
     public required DatabaseSettings Database { get; set; }
 
+    public ImagesSettings Images { get; set; } = new();
+
     public bool DisableRegistration { get; set; }
     public bool DisableLogin { get; set; }
 
     [Required]
     public string MediaStoragePath { get; set; } = AppConstants.DefaultMediaStoragePath!;
-    
-    public List<string> AllowedUploadExtensions { get; set; } = new() { ".jpg", ".jpeg", ".png", ".gif" };
+
+    // Są problemy z listami, bo wartości z appsettings.json są do nich dodawane zamiast zastępować listy, które winny być default XD
+    // Muszę coś wymyślić na to, bo chcę mieć default wartości w kodzie.    
+    public List<string> AllowedUploadExtensions { get; set; } = new() /* { ".jpg", ".jpeg", ".png", ".gif" }*/;
     
     /// <summary>
     /// Strict image checks not only checks format of an image but also it's validity.
@@ -58,5 +61,24 @@ public class AppSettings
         public string? Name { get; set; }
         public string? Author { get; set; }
         public string? AuthorUrl { get; set; }
+    }
+
+    public class ImagesSettings
+    {
+        public ThumbnailsSettings Thumbnails { get; set; } = new();
+        public ConvertionSettings Convertion { get; set; } = new();
+
+        public class ThumbnailsSettings
+        {
+            public string Format { get; set; } = "webp";
+            public int Quality { get; set; } = 65;
+            public List<int> Widths { get; set; } = new() /*{ 200, 300 }*/;
+        }
+
+        public class ConvertionSettings
+        {
+            public bool AllowConvertion { get; set; } = true;
+            public List<string> AllowedFormats = new() /*{ "png", "jpg", "jpeg", "webp", "gif" }*/;
+        }
     }
 }
