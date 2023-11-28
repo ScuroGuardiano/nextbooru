@@ -3,6 +3,7 @@ import { IMediaGalleryElement } from "../interfaces/i-media-gallery-element";
 import { MediaMode } from "../enums/media-mode.enum";
 
 export interface MediaGalleryElementInit {
+  id: number;
   title?: string;
   tags?: string;
   width: number;
@@ -14,6 +15,7 @@ export interface MediaGalleryElementInit {
 
 export default class MediaGalleryElement implements IMediaGalleryElement {
   constructor(init: MediaGalleryElementInit) {
+    this.id = init.id;
     this.title = init.title;
     this.tags = init.tags;
     this.width = init.width;
@@ -25,6 +27,7 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
 
   static fromImageDto(imageDto: ImageDto) {
     return new MediaGalleryElement({
+      id: imageDto.id,
       title: imageDto.title,
       tags: imageDto.tags?.map(t => t.name).join(" "),
       width: imageDto.width,
@@ -35,6 +38,7 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
     });
   }
 
+  id: number;
   title?: string;
   tags?: string;
   width: number;

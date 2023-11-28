@@ -1,7 +1,48 @@
 <ul>
-  <li *ngFor="let el of mediaList" #mediaContainer>
+  <li *ngFor="let el of mediaList.data; trackBy: mediaListTrackBy" #mediaContainer>
     <a [routerLink]="el.imagePageUrl" class="unstyled-link">
       <img [src]="el.getImageUrl(mediaContainer.offsetWidth, 'thumbnail')" [title]="elementHoverText(el)">
     </a>
   </li>
 </ul>
+
+<div class="pagination">
+  <a
+    *ngIf="mediaList.page > 1"
+    routerLink="."
+    [queryParams]="{ page: 1}"
+    queryParamsHandling='merge'
+  >&lt;&lt;</a>
+
+  <a
+    *ngIf="mediaList.page > 1"
+    routerLink="."
+    [queryParams]="{ page: mediaList.page - 1 }"
+    queryParamsHandling='merge'
+  >&lt;</a>
+
+  <ng-container *ngFor="let page of getDisplayedPages()">
+    <a
+      *ngIf="page !== mediaList.page"
+      routerLink="."
+      [queryParams]="{ page: page }"
+      queryParamsHandling='merge'
+    >{{ page }}</a>
+    <span *ngIf="page === mediaList.page">{{ page }}</span>
+  </ng-container>
+
+
+  <a
+    *ngIf="mediaList.page < mediaList.totalPages"
+    routerLink='.'
+    [queryParams]="{ page: mediaList.page + 1 }"
+    queryParamsHandling='merge'
+  >&gt;</a>
+
+  <a
+    *ngIf="mediaList.page < mediaList.totalPages"
+    routerLink="."
+    [queryParams]="{ page: mediaList.totalPages }"
+    queryParamsHandling='merge'
+  >&gt;&gt;</a>
+</div>

@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LayoutModule } from './layout/layout.module';
 import { NgxsModule, Store } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AUTH_STATE_TOKEN, AuthState } from './store/state/auth.state';
 import { httpInterceptorProviders } from './interceptors/interceptors';
 import { AuthService } from './services/auth.service';
@@ -35,7 +36,8 @@ function appInitFactory(authService: AuthService, store: Store) {
     ),
     NgxsStoragePluginModule.forRoot({
       key: AuthState
-    })
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot()
   ],
   providers: [
     httpInterceptorProviders,
