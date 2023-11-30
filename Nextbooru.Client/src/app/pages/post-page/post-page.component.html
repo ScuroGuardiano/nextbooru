@@ -1,0 +1,80 @@
+<ng-container *ngIf="imageMetadata$ | async as image; else loading">
+  <div class="post-container" *ngIf="image.data as data; else error">
+    <div class="metadata">
+      <div class="tags">
+        <h3>Tags</h3>
+        <ul>
+          <ng-container *ngFor="let tagType of image.data.tagTypes">
+            <li class="tags-header">{{ tagType }}</li>
+            <li
+              *ngFor="let tag of image.data.tagsMap.get(tagType)"
+              class="tag tag-type-{{tagType}}"
+            >
+              <a routerLink="/posts" [queryParams]="{ tags: tag }" class="tag-name">{{ tag }}</a>{{' '}}
+              <span class="tag-count">0</span>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+      <div class="statistics">
+        <h3>Statistics</h3>
+        <ul>
+          <li>Id: {{ image.data.id }}</li>
+          <li class="_todo">Posted: TODO XD</li>
+          <li>
+            by{{' '}}
+            <a routerLink="/users/{{image.data.uploadedBy?.username}}">
+              {{ image.data.uploadedBy?.displayName }}
+            </a>
+          </li>
+          <li>Dims: {{ image.data.width }}x{{ image.data.height }}</li>
+          <li>Size: {{ image.data.sizeInBytes | bytes }}</li>
+          <li *ngIf="image.data.source">
+            Source: <a [href]="image.data.source" target="_blank">{{ image.data.source }}</a>
+          </li>
+          <li class="_todo">Rating: TODO XD</li>
+          <li class="_todo">Votes: TODO, nicer, idk some nice buttons + and - or arrows</li>
+        </ul>
+      </div>
+      <div class="Options">
+        <h3>Options</h3>
+        <p>Todo</p>
+      </div>
+      <div class="History">
+        <h3>History</h3>
+        <p>Todo</p>
+      </div>
+      <div class="Related posts">
+        <h3>Related Posts</h3>
+        <p class="_todo">
+          Okey, this is bad, it should detect if post exists and if user can display it<br>
+          Also I want this to be better than gelbooru, it should be next post
+          <b>related to current search results.</b><br>
+          And I want it to be prettier, somewhere on top of the post page or maybe on sides.
+          I want to make it easily accesible and to be convienient.
+        </p>
+        <ul>
+          <li><a routerLink="/posts/{{image.data.id - 1}}">Previous</a></li>
+          <li><a routerLink="/posts/{{image.data.id + 1}}">Next</a></li>
+          <li>Similar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="image">
+      <img [src]="image.data.url"/>
+    </div>
+  </div>
+
+  <ng-template #error>
+    {{ image.error }}
+  </ng-template>
+</ng-container>
+
+<!--
+  TODO: I don't know if want this here, I could add waiting for api response before showing whole component UwU
+-->
+<ng-template #loading>
+  Loading...
+</ng-template>
+

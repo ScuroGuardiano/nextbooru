@@ -20,4 +20,8 @@ export class ImagesService {
       params
     });
   }
+
+  public getImage(id: number) {
+    return this.httpClient.get<ImageDto>(BackendEndpoints.images.get(id));
+  }
 }

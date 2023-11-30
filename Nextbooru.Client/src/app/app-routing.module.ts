@@ -25,6 +25,11 @@ const routes: Routes = [
       .then(c => c.PostsPageComponent)
   },
   {
+    path: "posts/:id",
+    loadComponent: () => import("./pages/post-page/post-page.component")
+      .then(c => c.PostPageComponent)
+  },
+  {
     path: "settings",
     loadComponent: () => import("./pages/settings-page/settings-page.component")
       .then(c => c.SettingsPageComponent),

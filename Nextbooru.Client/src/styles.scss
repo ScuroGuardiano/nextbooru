@@ -54,6 +54,11 @@
   --link: var(--accent-400);
 }
 
+._todo {
+  background-color: var(--rose-900);
+  color: white;
+}
+
 body {
   margin: 0;
   height: 100vh;

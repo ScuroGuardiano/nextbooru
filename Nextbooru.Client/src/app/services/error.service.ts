@@ -26,6 +26,10 @@ export class ErrorService {
       switch (err.status) {
         case 0:
           return "Uknown error, check your internet connection or try again later.";
+        case 403:
+          return "Error 403 - Forbidden, you do not have permission to view this resource."
+        case 404:
+          return "Error 404 - Resource not found"
         case 504:
           return "Gateway timeout, server is unreachable. Try again later or contact administrator."
         default:

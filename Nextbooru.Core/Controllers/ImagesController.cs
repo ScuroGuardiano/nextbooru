@@ -119,15 +119,14 @@ public class ImagesController : ControllerBase
     private async Task SendOriginalImage(Image image)
     {
         Response.ContentType = image.ContentType;
-        using Stream? imageStream = await imageService.GetImageStreamByFileIdAsync(image.StoreFileId);
+        await using var imageStream = await imageService.GetImageStreamByFileIdAsync(image.StoreFileId);
         await imageStream.CopyToAsync(Response.Body);
     }
 
     private async Task SendThumbnailImage(Image image, string format, int width)
     {
         var (stream, contentType) = await imageService.GetImageThumbnailAsync(image.Id, width, format);
-        Console.WriteLine(stream.Length);
-        using (stream)
+        await using (stream)
         {
             Response.ContentType = contentType;
             await stream.CopyToAsync(Response.Body);

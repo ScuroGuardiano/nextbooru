@@ -23,7 +23,7 @@ function appInitFactory(authService: AuthService, store: Store) {
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
