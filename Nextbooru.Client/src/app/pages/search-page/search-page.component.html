@@ -1,11 +1,22 @@
-<div class="search">
+<form class="search" (submit)="search($event)">
   <img src="/assets/aqua-min.png" />
   <p>Hewwo senpai, let's search for some hentai!</p>
-  <input type="search" [formControl]="searchTerm"><br>
+  <div class="input-container">
+    <input type="search" [formControl]="searchTerm" #searchInput><br>
+    <app-autocomplete
+      [bindTo]="searchInput"
+      [data]="(autocompleteData$ | async) ?? []"
+      (select)="applyAutocomplete($event)">
+      <ng-template appAutocompleteSuggestion let-suggestion>
+        <span class="tag-type-{{ suggestion.tagType }}">{{ suggestion.name }} ({{ suggestion.count }})</span>
+      </ng-template>
+    </app-autocomplete>
+  </div>
+
   <button
+    type="submit"
     class="btn btn-primary"
     [disabled]="searchTerm.invalid"
-    (click)="search()"
   >Search</button>
   <p>Serving 0 images</p>
-</div>
+</form>

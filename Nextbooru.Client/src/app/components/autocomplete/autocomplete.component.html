@@ -1,0 +1,15 @@
+<ul *ngIf="visible">
+  <li
+    *ngFor="let suggestion of data; index as i"
+    [ngClass]="{ selected: i === selectedIdx }"
+    (click)="select(suggestion)"
+  >
+    <ng-container
+      *ngIf="suggestionTemplate; else default"
+      [ngTemplateOutlet]="suggestionTemplate.template"
+      [ngTemplateOutletContext]="{ $implicit: suggestion }"
+    >
+    </ng-container>
+    <ng-template #default>{{ suggestion }}</ng-template>
+  </li>
+</ul>

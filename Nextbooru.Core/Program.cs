@@ -23,6 +23,7 @@ builder.Services.AddSGAuthentication<AppDbContext>();
 builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
 builder.Services.AddSingleton<ImageConvertionService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<TagsService>();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();

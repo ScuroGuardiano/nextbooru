@@ -13,7 +13,7 @@ public class Tag : BaseEntity
     public TagType TagType { get; set; } = TagType.General;
     
     /// <summary>
-    /// Just for information for user. It should count only <b>public</b> images.
+    /// Just information for an user. It should count only <b>public</b> images.
     /// </summary>
     public int ImagesCount { get; set; }
 

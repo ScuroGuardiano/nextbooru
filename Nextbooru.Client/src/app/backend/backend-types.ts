@@ -48,6 +48,7 @@ export interface ListImagesQuery {
 export interface TagDto {
   name: string;
   tagType: string;
+  count: number;
 }
 
 export interface ImageDto {
