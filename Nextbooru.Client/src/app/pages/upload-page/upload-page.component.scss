@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 :host {
   display: flex;
   justify-content: center;
@@ -6,9 +9,11 @@
 
 :host > div {
   width: min(300px, 100%);
+  position: relative;
 }
 
 .submit-wrapper {
+  position: relative;
   margin-top: 1rem;
   display: flex;
   width: 100%;

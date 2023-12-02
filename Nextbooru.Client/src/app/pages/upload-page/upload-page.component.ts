@@ -5,11 +5,15 @@ import { Observable, firstValueFrom, map } from 'rxjs';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UploadService } from 'src/app/services/upload.service';
+import { TagsAutocompleteDirective } from 'src/app/directives/tags-autocomplete.directive';
 
 @Component({
   selector: 'app-upload-page',
   standalone: true,
-  imports: [SharedModule],
+  imports: [
+    SharedModule,
+    TagsAutocompleteDirective
+  ],
   templateUrl: './upload-page.component.html',
   styleUrls: ['./upload-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
