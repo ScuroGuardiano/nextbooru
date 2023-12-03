@@ -15,20 +15,10 @@ button {
 }
 
 input {
-  width: 100%;
+  width: min(100%, 300px);
 }
 
 img {
   width: 256px;
   height: 256px;
-}
-
-.input-container {
-  width: min(100%, 300px);
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  * {
-    box-sizing: border-box;
-  }
 }
