@@ -253,8 +253,7 @@ public class ImageService
         {
             throw new NotAllowedFileTypeException(fileExtension, request.File.ContentType);
         }
-
-        List<ImageVariant> variants = new();
+        
         int width = 0, height = 0;
         var size = request.File.Length;
         ImageSharpImage? rawImage = null;

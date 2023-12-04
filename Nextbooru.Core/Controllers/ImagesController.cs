@@ -77,8 +77,6 @@ public class ImagesController : ControllerBase
     /// Later I'll add maybe here some redirection based on config to dedicated static files server like for example nginx
     /// or some custom image server with conversion support written for example in Blazingly Fast Rust :3
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="extension"></param>
     /// <exception cref="NotFoundException"></exception>
     [HttpGet("{id:long}.{format}")]
     public async Task GetImageFile([FromRoute] long id, [FromRoute] string format, [FromQuery] GetImageFileQuery query)

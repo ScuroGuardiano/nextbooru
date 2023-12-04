@@ -1,3 +1,5 @@
+using System.Linq.Dynamic;
+using System.Linq.Dynamic.Core;
 using Nextbooru.Core.Dto;
 using Nextbooru.Core.Models;
 
@@ -24,5 +26,49 @@ public class TagsService
             .Select(t => TagDto.FromTagModel(t))
             .ToListAsync();
         return tags;
+    }
+
+    public async Task<ListResponse<TagDto>> ListTags(ListTagsQuery queryData)
+    {
+        ArgumentNullException.ThrowIfNull(queryData.ResultsOnPage);
+
+        var query = dbContext.Tags.AsQueryable();
+
+        if (queryData.Name is not null)
+        {
+            query = query.Where(t => t.Name == queryData.Name);
+        }
+            
+        if (queryData.OrderBy is not null)
+        {
+            var orderable = query.OrderBy($"{queryData.OrderBy} {queryData.SortOrder}");
+            if (queryData.OrderBy != "Id")
+            {
+                orderable = orderable.ThenBy(t => t.Id);
+            }
+
+            query = orderable;
+        }
+        else
+        {
+            query = query.OrderBy(t => t.Id);
+        }
+
+        var total = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling((decimal)total / queryData.ResultsOnPage.Value);
+        var tags = await query
+            .Skip(queryData.ResultsOnPage.Value * (queryData.Page - 1))
+            .Take(queryData.ResultsOnPage.Value)
+            .ToListAsync();
+        
+        return new ListResponse<TagDto>()
+        {
+            Data = tags.Select(TagDto.FromTagModel).ToList(),
+            Page = queryData.Page,
+            RecordsPerPage = queryData.ResultsOnPage.Value,
+            LastRecordId = tags.LastOrDefault()?.Id ?? 0,
+            TotalPages = totalPages,
+            TotalRecords = total
+        };
     }
 }
