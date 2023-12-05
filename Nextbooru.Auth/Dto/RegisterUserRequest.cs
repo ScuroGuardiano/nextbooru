@@ -1,19 +1,36 @@
-using System.ComponentModel.DataAnnotations;
+using FluentValidation;
 
 namespace Nextbooru.Auth.Dto;
 
 public class RegisterUserRequest
 {
-    [Required]
-    [MaxLength(16)]
-    [MinLength(3)]
     public required string Username { get; set; }
-
-    [EmailAddress]
     public string? Email { get; set; }
-
-    [Required]
-    [MaxLength(72)]
-    [MinLength(8)]
     public required string Password { get; set; }
+
+    public class RegisterUserRequestValidator : AbstractValidator<RegisterUserRequest>
+    {
+        public RegisterUserRequestValidator()
+        {
+            RuleFor(x => x.Username)
+                .NotEmpty()
+                .Length(3, 16)
+                .Must(NotBeOneOf(["me", "admin"]))
+                .WithMessage("Username {PropertyValue} is forbidden.")
+                .Matches("^[a-zA-Z0-9]+[a-zA-Z0-9_]*[a-zA-Z0-9]$");
+
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .EmailAddress();
+
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .Length(8, 72);
+        }
+
+        private Func<string, bool> NotBeOneOf(string[] forbiddenValues)
+        {
+            return x => !forbiddenValues.Contains(x);
+        }
+    }
 }

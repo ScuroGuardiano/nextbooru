@@ -1,3 +1,5 @@
+using System.Reflection;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +40,7 @@ public static class AuthenticationExtensions
         services.AddHttpContextAccessor();
         services.AddScoped<ISessionService<TSession>, TSessionService>();
         services.AddScoped<IUserService<TUser>, TUserService>();
+        services.AddValidatorsFromAssembly(Assembly.GetCallingAssembly());
 
         if (addControllers)
         {
