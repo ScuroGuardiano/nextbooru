@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MimeTypes;
 using Nextbooru.Auth.Models;
 using Nextbooru.Core.Dto;
@@ -52,7 +51,7 @@ public class ImageService
     {
         ArgumentNullException.ThrowIfNull(request.ResultsOnPage);
 
-        var toSkip = (request.Page - 1) * request.ResultsOnPage.Value;
+        var toSkip = (request.Page - 1) * request.ResultsOnPage;
         var query = dbContext.Images.Include(i => i.Tags).AsQueryable();
 
         if (user is null)
@@ -82,10 +81,10 @@ public class ImageService
         var results = await query
             .OrderByDescending(i => i.Id)
             .Skip(toSkip)
-            .Take(request.ResultsOnPage.Value)
+            .Take(request.ResultsOnPage)
             .ToListAsync();
 
-        var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage.Value);
+        var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage);
 
         return new ListResponse<ImageDto>()
         {
@@ -93,7 +92,7 @@ public class ImageService
             Page = request.Page,
             TotalPages = totalPages,
             TotalRecords = total,
-            RecordsPerPage = request.ResultsOnPage.Value,
+            RecordsPerPage = request.ResultsOnPage,
             LastRecordId = results.LastOrDefault()?.Id ?? 0
         };
     }

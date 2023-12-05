@@ -1,10 +1,19 @@
+using FluentValidation;
+
 namespace Nextbooru.Core.Dto;
 
 public class UserLoginRequest
 {
-    [Required]
     public required string Username { get; init; }
-
-    [Required]
     public required string Password { get; init; }
+    
+    public class UserLoginRequestValidator : AbstractValidator<UserLoginRequest>
+    {
+        public UserLoginRequestValidator()
+        {
+            RuleFor(x => x.Username).NotEmpty();
+            RuleFor(x => x.Password).NotEmpty();
+        }
+    }
+
 }

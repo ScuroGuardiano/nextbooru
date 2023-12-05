@@ -1,3 +1,5 @@
+using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.Options;
 using SGLibCS.Utils.Environment;
 using Nextbooru.Core.Filters;
@@ -6,6 +8,7 @@ using Nextbooru.Auth;
 using Nextbooru.Core;
 using Nextbooru.Core.Services;
 using Nextbooru.Shared.Storage;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 EnviromentVariablesMapper.MapVariables(AppSettings.EnvMappings);
@@ -19,11 +22,15 @@ builder.Services.AddOptions<AppSettings>()
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddSGAuthentication<AppDbContext>();
 
-
 builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
 builder.Services.AddSingleton<ImageConvertionService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<TagsService>();
+
+// HOLY FUCK, WHY IT'S ENABLED BY DEFAULT XD
+ValidatorOptions.Global.LanguageManager.Enabled = false;
+builder.Services.AddValidatorsFromAssembly(Assembly.GetCallingAssembly());
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddControllers(options => {
     options.Filters.Add<HttpResponseExceptionFilter>();
@@ -51,7 +58,7 @@ app.UseAuthorization();
 
 // Block using api routes without prefix.
 // TODO: change later to support SPA
-app.Use((HttpContext ctx, RequestDelegate next) => {
+app.Use((ctx, next) => {
     if (ctx.Request.PathBase == string.Empty)
     {
         ctx.Response.StatusCode = 404;
@@ -64,8 +71,8 @@ app.MapControllers();
 
 try
 { 
-    var config = app.Services.GetService<IOptions<AppSettings>>().Value;
-    Console.WriteLine(String.Join(", ", config.Images.Thumbnails.Widths.Select(x => x.ToString())));
+    var config = app.Services.GetService<IOptions<AppSettings>>()!.Value;
+    Console.WriteLine(string.Join(", ", config.Images.Thumbnails.Widths.Select(x => x.ToString())));
     app.Run();
 }
 catch (Exception ex)

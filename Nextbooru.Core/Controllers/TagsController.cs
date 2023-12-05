@@ -35,7 +35,10 @@ public class TagsController : ControllerBase
     [HttpGet]
     public async Task<ListResponse<TagDto>> ListTags([FromQuery] ListTagsQuery query)
     {
-        query.ResultsOnPage ??= configuration.DefaultResultsPerPage;
+        if (query.ResultsOnPage <= 0)
+        {
+            query.ResultsOnPage = configuration.DefaultResultsPerPage;
+        }
         if (query.ResultsOnPage > configuration.MaxResultsPerPage)
         {
             query.ResultsOnPage = configuration.MaxResultsPerPage;

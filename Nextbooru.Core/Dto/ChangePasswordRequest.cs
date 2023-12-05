@@ -1,14 +1,18 @@
+using FluentValidation;
+
 namespace Nextbooru.Core.Dto;
 
 public class ChangePasswordRequest
 {
-    [Required]
     public required string CurrentPassword { get; init; }
-
-    [
-        Required,
-        MinLength(8),
-        MaxLength(72)
-    ]
     public required string NewPassword { get; init; }
+
+    public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequest>
+    {
+        public ChangePasswordRequestValidator()
+        {
+            RuleFor(x => x.CurrentPassword).NotEmpty();
+            RuleFor(x => x.NewPassword).NotEmpty().Length(8, 72);
+        }
+    }
 }

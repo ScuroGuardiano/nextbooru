@@ -27,7 +27,11 @@ public class ImagesController : ControllerBase
     [HttpGet]
     public async Task<ListResponse<ImageDto>> ListImages([FromQuery] ListImagesQuery imagesQuery)
     {
-        imagesQuery.ResultsOnPage ??= configuration.DefaultResultsPerPage;
+        if (imagesQuery.ResultsOnPage <= 0)
+        {
+            imagesQuery.ResultsOnPage = configuration.DefaultResultsPerPage;
+        }
+        
         if (imagesQuery.ResultsOnPage > configuration.MaxResultsPerPage)
         {
             imagesQuery.ResultsOnPage = configuration.MaxResultsPerPage;

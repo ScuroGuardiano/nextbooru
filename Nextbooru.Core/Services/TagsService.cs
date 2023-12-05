@@ -55,17 +55,17 @@ public class TagsService
         }
 
         var total = await query.CountAsync();
-        var totalPages = (int)Math.Ceiling((decimal)total / queryData.ResultsOnPage.Value);
+        var totalPages = (int)Math.Ceiling((decimal)total / queryData.ResultsOnPage);
         var tags = await query
-            .Skip(queryData.ResultsOnPage.Value * (queryData.Page - 1))
-            .Take(queryData.ResultsOnPage.Value)
+            .Skip(queryData.ResultsOnPage * (queryData.Page - 1))
+            .Take(queryData.ResultsOnPage)
             .ToListAsync();
         
         return new ListResponse<TagDto>()
         {
             Data = tags.Select(TagDto.FromTagModel).ToList(),
             Page = queryData.Page,
-            RecordsPerPage = queryData.ResultsOnPage.Value,
+            RecordsPerPage = queryData.ResultsOnPage,
             LastRecordId = tags.LastOrDefault()?.Id ?? 0,
             TotalPages = totalPages,
             TotalRecords = total
