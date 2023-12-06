@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, switchMap } from 'rxjs';
 import { ImageDto } from 'src/app/backend/backend-types';
 import { ErrorService } from 'src/app/services/error.service';
 import { ImagesService } from 'src/app/services/images.service';
