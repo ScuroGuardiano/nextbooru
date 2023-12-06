@@ -30,6 +30,11 @@ const routes: Routes = [
       .then(c => c.PostPageComponent)
   },
   {
+    path: "tags",
+    loadComponent: () => import("./pages/tags-page/tags-page.component")
+      .then(c => c.TagsPageComponent)
+  },
+  {
     path: "settings",
     loadComponent: () => import("./pages/settings-page/settings-page.component")
       .then(c => c.SettingsPageComponent),

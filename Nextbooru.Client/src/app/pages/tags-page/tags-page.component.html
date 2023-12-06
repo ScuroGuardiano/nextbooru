@@ -1,0 +1,45 @@
+<form class="filter-form" [formGroup]="form" (submit)="onSubmit($event)">
+  <label for="name">Name</label>
+  <input type="text" id="name" formControlName="name"/>
+
+  <label for="order-by">Order by</label>
+  <select id="order-by" formControlName="orderBy">
+    <option *ngFor="let field of (orderableFields$ | async) ?? []" [ngValue]="field.key">
+      {{ field.display }}
+    </option>
+  </select>
+
+  <label for="order-direction">Order direction</label>
+  <select id="order-direction" formControlName="orderDirection">
+    <option ngValue="asc">Ascending</option>
+    <option ngValue="desc">Descending</option>
+  </select>
+
+  <label for="on-page">Results on page</label>
+  <select id="on-page" formControlName="onPage">
+    <option ngValue="20">20</option>
+    <option ngValue="50">50</option>
+    <option ngValue="100">100</option>
+  </select>
+
+  <div class="search-submit">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </div>
+</form>
+
+<div class="tag-list">
+  <ng-container *ngIf="(tags$ | async) as tags; else loadingTpl">
+
+    <ul *ngIf="!tags.error && tags.data as tags; else errorTpl">
+      <li *ngFor="let tag of tags">{{ tag.name }}</li>
+    </ul>
+
+    <ng-template #errorTpl>
+      Error while loading tags: {{ tags.error }}
+    </ng-template>
+  </ng-container>
+
+  <ng-template #loadingTpl>
+    Loading tags...
+  </ng-template>
+</div>

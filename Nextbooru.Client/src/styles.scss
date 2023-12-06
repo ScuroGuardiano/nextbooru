@@ -161,3 +161,20 @@ label:has(+ input.ng-invalid.ng-touched) {
 input.ng-invalid.ng-touched {
   border-color: var(--error-fg);
 }
+
+select {
+  background-color: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: .3rem;
+
+  &:disabled {
+    color: var(--fg-4);
+    border: 1px solid var(--light-border);
+  }
+
+  &:focus {
+    outline: solid 2px var(--accent-fg);
+    border-color: var(--accent-fg);
+  }
+}

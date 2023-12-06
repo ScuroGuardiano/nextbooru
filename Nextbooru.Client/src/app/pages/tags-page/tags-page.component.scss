@@ -1,0 +1,26 @@
+.filter-form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  row-gap: 1rem;
+  column-gap: .8rem;
+
+  label {
+    display: block;
+    grid-area: "label";
+  }
+  select, input {
+    display: block;
+    grid-area: "input";
+  }
+
+  .search-submit {
+    button {
+      width: 120px;
+    }
+    grid-area: "search";
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: center;
+  }
+
+}

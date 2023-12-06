@@ -45,6 +45,14 @@ export interface ListImagesQuery {
   tags?: string;
 }
 
+export interface ListTagsQuery {
+  page?: number;
+  resultsOnPage?: number;
+  name?: string;
+  sortOrder?: string;
+  orderBy?: string;
+}
+
 export interface TagDto {
   name: string;
   tagType: string;

@@ -18,6 +18,8 @@ export const BackendEndpoints = {
     get: (id: number) => `${apiUrl}/images/${id}`
   },
   tags: {
-    autocomplete: `${apiUrl}/tags/autocomplete`
+    autocomplete: `${apiUrl}/tags/autocomplete`,
+    orderableFields: `${apiUrl}/tags/orderable-fields`,
+    list: `${apiUrl}/tags`,
   }
 } as const;

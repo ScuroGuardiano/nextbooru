@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TagDto } from '../backend/backend-types';
+import { ListResponse, ListTagsQuery, TagDto } from '../backend/backend-types';
 import { BackendEndpoints } from '../backend/backend-enpoints';
 
 @Injectable({
@@ -16,6 +16,19 @@ export class TagsService {
       {
         params: { phrase }
       }
+    );
+  }
+
+  public getOrderableFields() {
+    return this.httpClient.get<string[]>(
+      BackendEndpoints.tags.orderableFields
+    );
+  }
+
+  public list(query: ListTagsQuery = {}) {
+    return this.httpClient.get<ListResponse<TagDto>>(
+      BackendEndpoints.tags.list,
+      { params: query as any }
     );
   }
 }

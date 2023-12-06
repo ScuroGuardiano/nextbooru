@@ -29,7 +29,7 @@ public class AppSettings
 
     // Są problemy z listami, bo wartości z appsettings.json są do nich dodawane zamiast zastępować listy, które winny być default XD
     // Muszę coś wymyślić na to, bo chcę mieć default wartości w kodzie.    
-    public List<string> AllowedUploadExtensions { get; set; } = new() /* { ".jpg", ".jpeg", ".png", ".gif" }*/;
+    public List<string> AllowedUploadExtensions { get; set; } = [] /* { ".jpg", ".jpeg", ".png", ".gif" }*/;
     
     /// <summary>
     /// Strict image checks not only checks format of an image but also it's validity.
@@ -45,12 +45,14 @@ public class AppSettings
 
     public class DatabaseSettings
     {
-        [Required(ErrorMessage = "Database.Host is required. Set it in appsettings.json or as DB_HOST environment variable")]
-        public required string Host { get; set; }
+        [Required(ErrorMessage =
+            "Database.Host is required. Set it in appsettings.json or as DB_HOST environment variable")]
+        public string Host { get; set; } = null!;
         public string? Port { get; set; }
 
-        [Required(ErrorMessage = "Database.Username is required. Set it in appsettings.json or as DB_USERNAME environment variable")]
-        public required string Username { get; set; }
+        [Required(ErrorMessage =
+            "Database.Username is required. Set it in appsettings.json or as DB_USERNAME environment variable")]
+        public string Username { get; set; } = null!;
         public string? Password { get; set; }
         public string? Database { get; set; }
     }
@@ -72,13 +74,13 @@ public class AppSettings
         {
             public string Format { get; set; } = "webp";
             public int Quality { get; set; } = 65;
-            public List<int> Widths { get; set; } = new() /*{ 200, 300 }*/;
+            public List<int> Widths { get; set; } = [] /*[ 200, 300 ]*/;
         }
 
         public class ConvertionSettings
         {
             public bool AllowConvertion { get; set; } = true;
-            public List<string> AllowedFormats = new() /*{ "png", "jpg", "jpeg", "webp", "gif" }*/;
+            public List<string> AllowedFormats { get; set; } = [] /*{ "png", "jpg", "jpeg", "webp", "gif" }*/;
         }
     }
 }
