@@ -74,10 +74,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "nextbooru:build:production"
+              "buildTarget": "nextbooru:build:production"
             },
             "development": {
-              "browserTarget": "nextbooru:build:development"
+              "buildTarget": "nextbooru:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -85,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "nextbooru:build"
+            "buildTarget": "nextbooru:build"
           }
         },
         "test": {
