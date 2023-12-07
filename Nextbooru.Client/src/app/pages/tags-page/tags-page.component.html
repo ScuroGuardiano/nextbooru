@@ -30,9 +30,10 @@
 <div class="tag-list">
   <ng-container *ngIf="(tags$ | async) as tags; else loadingTpl">
 
-    <ul *ngIf="!tags.error && tags.data as tags; else errorTpl">
-      <li *ngFor="let tag of tags">{{ tag.name }}</li>
-    </ul>
+    <app-tags-table
+      *ngIf="!tags.error && tags.data as tags; else errorTpl"
+      [tags]="tags"
+    />
 
     <ng-template #errorTpl>
       Error while loading tags: {{ tags.error }}

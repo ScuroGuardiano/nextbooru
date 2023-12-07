@@ -1,0 +1,18 @@
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Images count</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(tag of tags; track tag.name) {
+      <tr>
+        <td>{{ tag.name }}</td>
+        <td>{{ tag.tagType }}</td>
+        <td>{{ tag.count }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -6,16 +6,18 @@ import { ListTagsQuery, TagDto } from 'src/app/backend/backend-types';
 import { ErrorService } from 'src/app/services/error.service';
 import { TagsService } from 'src/app/services/tags.service';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TagsTableComponent } from "../../components/tags-table/tags-table.component";
 
 @Component({
-  selector: 'app-tags-page',
-  standalone: true,
-  imports: [
-    SharedModule
-  ],
-  templateUrl: './tags-page.component.html',
-  styleUrl: './tags-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-tags-page',
+    standalone: true,
+    templateUrl: './tags-page.component.html',
+    styleUrl: './tags-page.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        SharedModule,
+        TagsTableComponent
+    ]
 })
 export class TagsPageComponent implements OnChanges {
   private readonly tagsService = inject(TagsService);
@@ -24,6 +26,13 @@ export class TagsPageComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     const query: ListTagsQuery = this.inputsToListTagsQuery();
+
+    this.form.patchValue({
+      name: query.name,
+      onPage: query.resultsOnPage?.toString() ?? this.defaultQuery.resultsOnPage.toString(),
+      orderBy: query.orderBy,
+      orderDirection: query.orderDirection ?? this.defaultQuery.orderDirection
+    });
 
     this.tags$ = this.tagsService.list(query).pipe(
       map(v => ({ data: v.data })),
@@ -67,7 +76,9 @@ export class TagsPageComponent implements OnChanges {
         return v.map(x => ({ key: x, display: this.orderableFieldsDisplays[x] ?? x }))
       }),
       tap(v => {
-        this.form.patchValue({ orderBy: v[0]?.key })
+        if (!v.some(x => x.key === this.form.value.orderBy)) {
+          this.form.patchValue({ orderBy: v[0]?.key })
+        }
       })
   );
 

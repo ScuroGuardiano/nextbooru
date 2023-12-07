@@ -49,6 +49,7 @@
 
   --border: var(--main-300);
   --light-border: var(--main-500);
+  --very-light-border: color-mix(in srgb, var(--main-100) 5%, transparent);
 
   --bg: var(--main-950);
   --link: var(--accent-400);
@@ -177,4 +178,34 @@ select {
     outline: solid 2px var(--accent-fg);
     border-color: var(--accent-fg);
   }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid var(--light-border);
+}
+
+thead {
+  border-bottom: 2px solid var(--very-light-border);
+}
+
+tbody tr:nth-child(odd) {
+  background-color: var(--very-light-border);
+}
+
+tr {
+  width: 100%;
+  display: flex;
+}
+th, td {
+  flex: 1;
+  padding: .2rem;
+}
+th {
+  text-align: left;
+}
+td {
+  text-align: left;
+  border: var(--very-light-border) solid 1px;
 }

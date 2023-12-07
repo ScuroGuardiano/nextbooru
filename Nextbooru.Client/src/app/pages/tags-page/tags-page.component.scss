@@ -1,8 +1,14 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
 .filter-form {
   display: grid;
   grid-template-columns: auto 1fr;
   row-gap: 1rem;
   column-gap: .8rem;
+  width: fit-content;
 
   label {
     display: block;
@@ -22,5 +28,8 @@
     display: flex;
     justify-content: center;
   }
+}
 
+.tag-list {
+  margin-top: 1rem;
 }
