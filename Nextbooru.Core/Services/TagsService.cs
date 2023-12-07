@@ -41,7 +41,7 @@ public class TagsService
             
         if (queryData.OrderBy is not null)
         {
-            var orderable = query.OrderBy($"{queryData.OrderBy} {queryData.SortOrder}");
+            var orderable = query.OrderBy($"{queryData.OrderBy} {queryData.OrderDirection}");
             if (queryData.OrderBy != "Id")
             {
                 orderable = orderable.ThenBy(t => t.Id);

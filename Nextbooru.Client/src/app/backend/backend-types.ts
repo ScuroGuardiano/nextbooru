@@ -49,7 +49,7 @@ export interface ListTagsQuery {
   page?: number;
   resultsOnPage?: number;
   name?: string;
-  sortOrder?: string;
+  orderDirection?: string;
   orderBy?: string;
 }
 

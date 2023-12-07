@@ -19,7 +19,7 @@ public class ListTagsQuery
     public int ResultsOnPage { get; set; }
     
     public string? Name { get; set; }
-    public string? SortOrder { get; set; } = "asc";
+    public string? OrderDirection { get; set; } = "asc";
     public string? OrderBy { get; set; } = "Id";
 
     public class ListTagsQueryValidator : AbstractValidator<ListTagsQuery>
@@ -32,7 +32,7 @@ public class ListTagsQuery
             // As I want incorrect values to be ingored and default or max used instead.
             RuleFor(x => x.ResultsOnPage).GreaterThanOrEqualTo(0);
 
-            RuleFor(x => x.SortOrder)
+            RuleFor(x => x.OrderDirection)
                 .Must(LowercaseBeOneOf(["asc", "desc"]))
                 .WithMessage("{PropertyName} can be only 'asc' or 'desc', your value is: {PropertyValue}");
             
@@ -43,12 +43,12 @@ public class ListTagsQuery
 
         private Func<string?, bool> LowercaseBeOneOf(string[] values)
         {
-            return (string? x) => x is null || values.Contains(x.ToLower());
+            return x => x is null || values.Contains(x.ToLower());
         }
         
         private Func<string?, bool> BeOneOf(IEnumerable<string> values)
         {
-            return (string? x) => x is null || values.Contains(x);
+            return x => x is null || values.Contains(x);
         }
     }
 }
