@@ -1,0 +1,42 @@
+<a
+*ngIf="currentPage > 1"
+routerLink="."
+[queryParams]="{ page: 1}"
+queryParamsHandling='merge'
+>&lt;&lt;</a>
+
+<a
+*ngIf="currentPage > 1"
+routerLink="."
+[queryParams]="{ page: currentPage - 1 }"
+queryParamsHandling='merge'
+>&lt;</a>
+
+
+@for(page of getDisplayedPages(); track page) {
+  @if (page !== currentPage) {
+    <a
+      routerLink="."
+      [queryParams]="{ page: page }"
+      queryParamsHandling='merge'
+    >{{ page }}</a>
+  }
+  @else {
+    <span>{{ page }}</span>
+  }
+}
+
+<!-- If total pages is not defined then I will display only previos and next buttons -->
+<a
+  *ngIf="totalPages == null || currentPage < totalPages"
+  routerLink='.'
+  [queryParams]="{ page: currentPage + 1 }"
+  queryParamsHandling='merge'
+>&gt;</a>
+
+<a
+  *ngIf="totalPages != null && currentPage < totalPages"
+  routerLink="."
+  [queryParams]="{ page: totalPages }"
+  queryParamsHandling='merge'
+>&gt;&gt;</a>
