@@ -10,4 +10,5 @@ import { TagDto } from 'src/app/backend/backend-types';
 })
 export class TagsTableComponent {
   @Input({ required: true }) tags!: TagDto[];
+  @Input() loading = false;
 }

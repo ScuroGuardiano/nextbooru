@@ -28,19 +28,23 @@
 </form>
 
 <div class="tag-list">
-  <ng-container *ngIf="(tags$ | async) as tags; else loadingTpl">
-
-    <app-tags-table
-      *ngIf="!tags.error && tags.data as tags; else errorTpl"
-      [tags]="tags"
-    />
-
-    <ng-template #errorTpl>
-      Error while loading tags: {{ tags.error }}
-    </ng-template>
-  </ng-container>
-
-  <ng-template #loadingTpl>
+  @if(tagsListResponse() || !loadingTags()) {
+    @if(!tagsError() && tagsListResponse(); as tagsListResponse) {
+      <app-query-params-paginator
+        [currentPage]="tagsListResponse.page"
+        [totalPages]="tagsListResponse.totalPages"
+      />
+      <app-tags-table [tags]="tagsListResponse.data" [loading]="loadingTags()"/>
+      <app-query-params-paginator
+        [currentPage]="tagsListResponse.page"
+        [totalPages]="tagsListResponse.totalPages"
+      />
+    }
+    @else {
+      Error while loading tags: {{ tagsError() }}
+    }
+  }
+  @else {
     Loading tags...
-  </ng-template>
+  }
 </div>

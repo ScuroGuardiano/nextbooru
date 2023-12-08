@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, SimpleChanges, inject, signal } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, catchError, map, of, tap } from 'rxjs';
-import { ListTagsQuery, TagDto } from 'src/app/backend/backend-types';
+import { Observable, Subscription, catchError, map, of, tap } from 'rxjs';
+import { ListResponse, ListTagsQuery, TagDto } from 'src/app/backend/backend-types';
 import { ErrorService } from 'src/app/services/error.service';
 import { TagsService } from 'src/app/services/tags.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TagsTableComponent } from "../../components/tags-table/tags-table.component";
+import { QueryParamsPaginatorComponent } from "../../components/query-params-paginator/query-params-paginator.component";
 
 @Component({
     selector: 'app-tags-page',
@@ -16,10 +17,11 @@ import { TagsTableComponent } from "../../components/tags-table/tags-table.compo
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         SharedModule,
-        TagsTableComponent
+        TagsTableComponent,
+        QueryParamsPaginatorComponent
     ]
 })
-export class TagsPageComponent implements OnChanges {
+export class TagsPageComponent implements OnChanges, OnDestroy {
   private readonly tagsService = inject(TagsService);
   private readonly errorService = inject(ErrorService);
   private readonly router = inject(Router);
@@ -34,14 +36,11 @@ export class TagsPageComponent implements OnChanges {
       orderDirection: query.orderDirection ?? this.defaultQuery.orderDirection
     });
 
-    this.tags$ = this.tagsService.list(query).pipe(
-      map(v => ({ data: v.data })),
-      catchError(err => {
-        console.error("Error while fetching tags");
-        console.error(err);
-        return of({ error: this.errorService.errorToHuman(err) });
-      })
-    );
+    this.loadTags(query);
+  }
+
+  ngOnDestroy(): void {
+    this.tagsSubscription?.unsubscribe();
   }
 
   @Input() page?: string = "1";
@@ -82,10 +81,11 @@ export class TagsPageComponent implements OnChanges {
       })
   );
 
-  tags$?: Observable<{
-    error?: string,
-    data?: TagDto[]
-  }>;
+  loadingTags = signal(false);
+  tagsError = signal<string | undefined>(undefined);
+  tagsListResponse = signal<ListResponse<TagDto> | undefined>(undefined);
+
+  private tagsSubscription?: Subscription;
 
   public onSubmit(event: Event) {
     event.preventDefault();
@@ -131,12 +131,38 @@ export class TagsPageComponent implements OnChanges {
     return { ...this.defaultQuery, ...query };
   }
 
-  private changePage(page: number) {
-    if (!isFinite(page) || page < 1) {
-      console.error(`Invalid page num`);
-      return;
-    }
+  // For future me:
+  // I really tried to do it fully declarative but I am clueless
+  // Basically I want to refresh table with data only when new Observable emits value.
+  // When I was changing observable then `tags$ | async` in template was null and
+  // my condition stopped displaying the table.
+  // So fuck this, I made it with the power of ***IMPERATIVE*** paradigm!
+  private loadTags(query: ListTagsQuery) {
+    // Cancel pending request if any
+    this.tagsSubscription?.unsubscribe();
 
-    throw new Error("Shit is not implemented");
+    this.loadingTags.set(true);
+
+    type TagsResult = { error?: string, response?: ListResponse<TagDto> };
+
+    const tags$: Observable<TagsResult> = this.tagsService.list(query).pipe(
+      map(v => ({ response: v })),
+      catchError(err => {
+        console.error("Error while fetching tags");
+        console.error(err);
+        return of({ error: this.errorService.errorToHuman(err) });
+      }),
+      tap(() => this.loadingTags.set(false))
+    );
+
+    this.tagsSubscription = tags$.subscribe(tags => {
+      if (tags.error) {
+        this.tagsError.set(tags.error);
+        return this.tagsListResponse.set(undefined);
+      }
+
+      this.tagsError.set(undefined);
+      this.tagsListResponse.set(tags.response);
+    });
   }
 }
