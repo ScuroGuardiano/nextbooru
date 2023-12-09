@@ -11,11 +11,11 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     private readonly AppSettings.DatabaseSettings configuration;
 
 
-    public DbSet<Image> Images { get; set; } = null!;
-    public DbSet<ImageVariant> ImageVariants { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
-
+    public DbSet<Image> Images { get; set; } = null!;
+    public DbSet<ImageVariant> ImageVariants { get; set; } = null!;
+    public DbSet<ImageVote> ImageVotes { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
@@ -70,7 +70,29 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
         modelBuilder.Entity<Tag>()
             .HasIndex(t => t.Name)
             .IsUnique();
-        
+
+        modelBuilder.Entity<ImageVote>()
+            .HasOne(iv => iv.User)
+            .WithMany()
+            .HasForeignKey(iv => iv.UserId)
+            .IsRequired();
+
+        modelBuilder.Entity<ImageVote>()
+            .HasOne(iv => iv.Image)
+            .WithMany()
+            .HasForeignKey(iv => iv.ImageId)
+            .IsRequired();
+
+        modelBuilder.Entity<ImageVote>()
+            .HasIndex(iv => new { iv.ImageId, iv.UserId })
+            .IsUnique();
+
+        ConfigureBaseEntities(modelBuilder);
+        base.OnModelCreating(modelBuilder);
+    }
+    
+    private void ConfigureBaseEntities(ModelBuilder modelBuilder)
+    {
         var entitiesWithDate = modelBuilder.Model.GetEntityTypes()
             .Where(type => type.ClrType.IsSubclassOf(typeof(BaseEntity)))
             .ToList();
@@ -85,8 +107,6 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
                 .Property("UpdatedAt")
                 .HasDefaultValueSql("NOW()");
         }
-
-        base.OnModelCreating(modelBuilder);
     }
 
     private string GetDbConnectionString()

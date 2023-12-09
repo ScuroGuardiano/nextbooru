@@ -14,7 +14,7 @@ public class Image : BaseEntity
     [Required]
     public required string StoreFileId { get; set; }
 
-    public List<ImageVariant> Variants { get; set; } = new();
+    public List<ImageVariant> Variants { get; set; } = [];
     
     public string? Title { get; set; }
 
@@ -30,9 +30,11 @@ public class Image : BaseEntity
     
     public long SizeInBytes { get; set; }
     
-    public List<Tag> Tags { get; set; } = new();
+    public List<Tag> Tags { get; set; } = [];
 
-    public List<int> TagsArr { get; set; } = new();
+    public List<int> TagsArr { get; set; } = [];
+    
+    public int Score { get; set; }
     
     public User? UploadedBy { get; set; }
     

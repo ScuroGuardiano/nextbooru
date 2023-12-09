@@ -174,6 +174,10 @@ namespace Nextbooru.Core.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_public");
 
+                    b.Property<int>("Score")
+                        .HasColumnType("integer")
+                        .HasColumnName("score");
+
                     b.Property<long>("SizeInBytes")
                         .HasColumnType("bigint")
                         .HasColumnName("size_in_bytes");
@@ -287,6 +291,52 @@ namespace Nextbooru.Core.Migrations
                     b.ToTable("image_variants", (string)null);
                 });
 
+            modelBuilder.Entity("Nextbooru.Core.Models.ImageVote", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<long>("ImageId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("image_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("VoteScore")
+                        .HasColumnType("integer")
+                        .HasColumnName("vote_score");
+
+                    b.HasKey("Id")
+                        .HasName("pk_image_votes");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_image_votes_user_id");
+
+                    b.HasIndex("ImageId", "UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_image_votes_image_id_user_id");
+
+                    b.ToTable("image_votes", (string)null);
+                });
+
             modelBuilder.Entity("Nextbooru.Core.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -382,6 +432,27 @@ namespace Nextbooru.Core.Migrations
                         .HasConstraintName("fk_image_variants_images_image_id");
 
                     b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("Nextbooru.Core.Models.ImageVote", b =>
+                {
+                    b.HasOne("Nextbooru.Core.Models.Image", "Image")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_votes_images_image_id");
+
+                    b.HasOne("Nextbooru.Auth.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_image_votes_users_user_id");
+
+                    b.Navigation("Image");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Nextbooru.Core.Models.Image", b =>

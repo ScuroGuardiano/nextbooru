@@ -20,5 +20,5 @@ public class Tag : BaseEntity
     [Orderable]
     public int ImagesCount { get; set; }
 
-    public List<Image> Images { get; } = new();
+    public List<Image> Images { get; } = [];
 }
