@@ -25,6 +25,7 @@ builder.Services.AddSGAuthentication<AppDbContext>();
 builder.Services.AddSingleton<IMediaStore, LocalMediaStore>();
 builder.Services.AddSingleton<ImageConvertionService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<ImageVotingService>();
 builder.Services.AddScoped<TagsService>();
 
 // HOLY FUCK, WHY IT'S ENABLED BY DEFAULT XD

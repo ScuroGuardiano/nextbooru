@@ -158,7 +158,7 @@ public class ImageService
         await imageConvertionService.ConvertImageAsync(
             originalImageStream,
             ms,
-            new ()
+            new ImageConvertionOptions
             {
                 Format = format.ToLower(),
                 Quality = configuration.Images.Thumbnails.Quality,
@@ -310,9 +310,27 @@ public class ImageService
 
     }
 
+    public Task<bool> CanUserReadImageAsync(User? user, Image image)
+    {
+        return Task.FromResult(image.IsPublic
+                               || user is not null && (user.IsAdmin || user.Id == image.UploadedById)
+        );
+    }
+
+    public async Task<bool> CanUserReadImageAsync(User? user, long imageId)
+    {
+        var userId = user?.Id ?? Guid.Empty;
+        if (user is not null && user.IsAdmin)
+        {
+            return true;
+        }
+
+        return await dbContext.Images.AnyAsync(i => i.IsPublic || userId == i.UploadedById);
+    }
+
     private async Task<List<ImageVariant>> AddThumbnailsAsync(Image image, ImageSharpImage rawImage)
     {
-        List<ImageVariant> variants = new();
+        List<ImageVariant> variants = [];
 
         foreach (var thumbnailWidth in configuration.Images.Thumbnails.Widths)
         {

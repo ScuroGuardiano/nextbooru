@@ -11,13 +11,5 @@ public class Vote : BaseEntity
 
     public User? User { get; set; }
     
-    /// <summary>
-    ///  1: Upvote
-    /// -1: Downvote
-    /// </summary>
-    [AllowedValues([1, -1])]
-    public int VoteScore { get; set; }
-    
-    public static readonly int Upvote = 1;
-    public static readonly int Downvote = -1;
+    public VoteScore VoteScore { get; set; }
 }

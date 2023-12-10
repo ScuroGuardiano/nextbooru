@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Nextbooru.Auth.Models;
@@ -14,13 +15,18 @@ namespace Nextbooru.Core.Controllers;
 public class ImagesController : ControllerBase
 {
     private readonly ImageService imageService;
+    private readonly ImageVotingService imageVotingService;
     private readonly ISessionService<Session> sessionService;
     private readonly AppSettings configuration;
 
-    public ImagesController(ImageService imageService, ISessionService<Session> sessionService, IOptions<AppSettings> options)
+    public ImagesController(
+        ImageService imageService,
+        ISessionService<Session> sessionService,
+        IOptions<AppSettings> options, ImageVotingService imageVotingService)
     {
         this.imageService = imageService;
         this.sessionService = sessionService;
+        this.imageVotingService = imageVotingService;
         this.configuration = options.Value;
     }
 
@@ -95,7 +101,7 @@ public class ImagesController : ControllerBase
         {
             // If image is not public only uploader and admin can see it
             var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
-            if (user is null || (!user.IsAdmin && !user.Id.Equals(image.UploadedById)))
+            if (!await imageService.CanUserReadImageAsync(user, image))
             {
                 Response.ContentType = "text/html";
                 Response.StatusCode = StatusCodes.Status418ImATeapot;
@@ -117,7 +123,35 @@ public class ImagesController : ControllerBase
                 return;
         }
     }
+    
+    [Authorize]
+    [HttpPut("{id:long}/upvote")]
+    public async Task<IActionResult> Upvote([FromRoute] long id)
+    {
+        var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
+        
+        if (!await imageService.CanUserReadImageAsync(user, id))
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
 
+        return new JsonResult(await imageVotingService.SwitchUpvote(user.Id, id));
+    }
+    
+    [Authorize]
+    [HttpPut("{id:long}/downvote")]
+    public async Task<IActionResult> Downvote([FromRoute] long id)
+    {
+        var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
+        
+        if (!await imageService.CanUserReadImageAsync(user, id))
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        return new JsonResult(await imageVotingService.SwitchDownvote(user.Id, id));
+    }
+    
     private async Task SendOriginalImage(Image image)
     {
         Response.ContentType = image.ContentType;
