@@ -56,29 +56,26 @@ public class ImagesController : ControllerBase
         {
             throw new NotFoundException(id, "Image");
         }
-
-        if (image.IsPublic)
-        {
-            return new JsonResult(ImageDto.FromImageModel(
-                image,
-                imageService.GetUrlForImage(image),
-                imageService.GetThumbnailUrl(image)
-            ));
-        }
-        
-        // If image is not public only uploader and admin can see it
         
         var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
-        if (user is null || (!user.IsAdmin && !user.Id.Equals(image.UploadedById)))
+        if (!image.IsPublic)
         {
-            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+            // If image is not public only uploader and admin can see it
+            if (user is null || (!user.IsAdmin && !user.Id.Equals(image.UploadedById)))
+            {
+                return new StatusCodeResult(StatusCodes.Status403Forbidden);
+            }
         }
-        
-        return new JsonResult(ImageDto.FromImageModel(
+
+        var imageDto = ImageDto.FromImageModel(
             image,
             imageService.GetUrlForImage(image),
             imageService.GetThumbnailUrl(image)
-        ));
+        );
+
+        imageDto.UserVote = user is not null ? await imageVotingService.GetUserVote(user.Id, image.Id) : null;
+        
+        return new JsonResult(imageDto);
     }
 
     /// <summary>

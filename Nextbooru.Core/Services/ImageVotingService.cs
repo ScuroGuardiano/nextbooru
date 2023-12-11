@@ -37,6 +37,15 @@ public class ImageVotingService
     {
         return SwitchVote(userId, imageId, VoteScore.Downvote);
     }
+    
+    /// <returns>1 -> upvoted, -1 -> downvoted, 0 -> unvoted</returns>
+    public async Task<VoteScore> GetUserVote(Guid userId, long imageId)
+    {
+        return await dbContext.ImageVotes
+            .Where(iv => iv.UserId == userId)
+            .Select(iv => iv.VoteScore)
+            .FirstOrDefaultAsync();
+    }
 
     private async Task<VoteChange> SwitchVote(Guid userId, long imageId, VoteScore voteValue)
     {
@@ -50,7 +59,7 @@ public class ImageVotingService
             var vote = await dbContext.ImageVotes
                 .FirstOrDefaultAsync(iv => iv.ImageId == imageId && iv.UserId == userId);
             int currentScore;
-            int voteChangeVoteScore = VoteChange.NoVote;
+            var voteChangeVoteScore = VoteScore.Unvoted;
             
             if (vote is not null)
             {
@@ -60,7 +69,7 @@ public class ImageVotingService
                     vote.VoteScore = voteValue;
                     // Cancel previous vote and apply new vote
                     currentScore = await ChangeImageScore(imageId, (-1 * (int)previousScore) + (int)voteValue);
-                    voteChangeVoteScore = (int)voteValue;
+                    voteChangeVoteScore = voteValue;
                 }
                 else
                 {
@@ -93,7 +102,7 @@ public class ImageVotingService
             return new VoteChange()
             {
                 Score = currentScore,
-                VoteScore = (int)voteValue
+                VoteScore = voteValue
             };
         }
         catch

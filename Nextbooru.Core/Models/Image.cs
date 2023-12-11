@@ -45,7 +45,7 @@ public class Image : BaseEntity
     
     public long SizeInBytes { get; set; }
     
-    public List<Tag> Tags { get; set; } = [];
+    public List<Tag>? Tags { get; set; } = [];
 
     public List<int> TagsArr { get; set; } = [];
     

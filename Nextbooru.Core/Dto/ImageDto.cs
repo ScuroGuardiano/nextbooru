@@ -15,6 +15,12 @@ public class ImageDto
     public int Height { get; init; }
     public long SizeInBytes { get; init; }
     public required bool IsPublic { get; init; }
+    public int Score { get; set; }
+    
+    /// <summary>
+    ///  -1 -> Downvoted, 1 -> Upvoted, 0 -> Unvoted
+    /// </summary>
+    public VoteScore? UserVote { get; set; }
     public List<TagDto>? Tags { get; init; }
     public BasicUserInfo? UploadedBy { get; init; }
 
@@ -33,7 +39,8 @@ public class ImageDto
             Height = image.Height,
             SizeInBytes = image.SizeInBytes,
             IsPublic = image.IsPublic,
-            Tags = image.Tags.Select(TagDto.FromTagModel).ToList(),
+            Score = image.Score,
+            Tags = image.Tags?.Select(TagDto.FromTagModel).ToList(),
             UploadedBy = image.UploadedBy is not null ? new BasicUserInfo(image.UploadedBy) : null
         };
     }
