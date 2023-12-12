@@ -31,7 +31,25 @@ public class ImagesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ListResponse<ImageDto>> ListImages([FromQuery] ListImagesQuery imagesQuery)
+    public async Task<ListResponse<MinimalImageDto>> ListImages([FromQuery] ListImagesQuery imagesQuery)
+    {
+        if (imagesQuery.ResultsOnPage <= 0)
+        {
+            imagesQuery.ResultsOnPage = configuration.DefaultResultsPerPage;
+        }
+        
+        if (imagesQuery.ResultsOnPage > configuration.MaxResultsPerPage)
+        {
+            imagesQuery.ResultsOnPage = configuration.MaxResultsPerPage;
+        }
+
+        var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
+
+        return await imageService.ListImageMinimalsAsync(imagesQuery, user);
+    }
+    
+    [HttpGet("detailed")]
+    public async Task<ListResponse<ImageDto>> ListDetailedImages([FromQuery] ListImagesQuery imagesQuery)
     {
         if (imagesQuery.ResultsOnPage <= 0)
         {

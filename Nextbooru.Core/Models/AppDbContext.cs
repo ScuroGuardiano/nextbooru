@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 using Nextbooru.Auth;
 using Nextbooru.Auth.Models;
+using Nextbooru.Core.Models.QueryTypes;
 using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Models;
@@ -18,6 +19,10 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     public DbSet<ImageVote> ImageVotes { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
 
+    
+    // <Shit zone>
+    public DbSet<MinimalListImageModel> MinimalListImages { get; set; } = null!;
+    // </Shit zone>
     public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
     {
         this.configuration = configuration.Value.Database;
@@ -43,6 +48,11 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     {
         AuthHelpers.RegisterSessionUserRelation<User, Session>(modelBuilder);
 
+        // <Shit zone see=https://stackoverflow.com/a/73279915>
+        modelBuilder.Entity<MinimalListImageModel>()
+            .ToView(null);
+        // </Shit zone>
+            
         modelBuilder.Entity<Image>()
             .HasOne(i => i.UploadedBy)
             .WithMany()
@@ -90,7 +100,7 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
         ConfigureBaseEntities(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
-    
+
     private void ConfigureBaseEntities(ModelBuilder modelBuilder)
     {
         var entitiesWithDate = modelBuilder.Model.GetEntityTypes()

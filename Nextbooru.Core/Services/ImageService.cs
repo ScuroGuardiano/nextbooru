@@ -1,3 +1,4 @@
+using System.Linq.Dynamic.Core;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using MimeTypes;
@@ -5,6 +6,7 @@ using Nextbooru.Auth.Models;
 using Nextbooru.Core.Dto;
 using Nextbooru.Core.Exceptions;
 using Nextbooru.Core.Models;
+using Nextbooru.Core.Models.QueryTypes;
 using Nextbooru.Shared.Storage;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -36,15 +38,23 @@ public class ImageService
 
     public string GetUrlForImage(Image image)
     {
+        return GetUrlForImage(image.Id, image.Extension ?? "");
+    }
+    public string GetUrlForImage(long imageId, string extension)
+    {
         // TODO: This HAS to be changed, it's terrible.
-        return $"/api/images/{image.Id}{image.Extension}";
+        return $"/api/images/{imageId}{extension}";
     }
 
     public string GetThumbnailUrl(Image image)
+    {
+        return GetThumbnailUrl(image.Id);
+    }
+    public string GetThumbnailUrl(long imageId)
     {   
         var format = configuration.Images.Thumbnails.Format;
         // TODO: This HAS to be changed, it's terrible.
-        return $"/api/images/{image.Id}.{format}";
+        return $"/api/images/{imageId}.{format}";
     }
 
     public async Task<ListResponse<ImageDto>> ListImagesAsync(ListImagesQuery request, User? user)
@@ -75,7 +85,7 @@ public class ImageService
             query = query.Where(i => tagsIdsFromQuery.All(id => i.TagsArr.Contains(id)));
         }
 
-        // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applies is unacceptably slow.
+        // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applied is unacceptably slow.
         var total = await query.CountAsync();
 
         var results = await query
@@ -89,6 +99,85 @@ public class ImageService
         return new ListResponse<ImageDto>()
         {
             Data = results.Select(i => ImageDto.FromImageModel(i, GetUrlForImage(i), GetThumbnailUrl(i))).ToList(),
+            Page = request.Page,
+            TotalPages = totalPages,
+            TotalRecords = total,
+            RecordsPerPage = request.ResultsOnPage,
+            LastRecordId = results.LastOrDefault()?.Id ?? 0
+        };
+    }
+    
+    public async Task<ListResponse<MinimalImageDto>> ListImageMinimalsAsync(ListImagesQuery request, User? user)
+    {
+        ArgumentNullException.ThrowIfNull(request.ResultsOnPage);
+
+        List<int> tagsIdsFromQuery = [];
+        if (request.TagsArray.Length > 0)
+        {
+            // TODO: [MINOR PERFORMANCE ISSUE] Can't we get this from somewhere else?
+            tagsIdsFromQuery = await dbContext.Tags
+                .Where(t => request.TagsArray.Contains(t.Name))
+                .Select(t => t.Id)
+                .ToListAsync();
+        }
+        
+        var toSkip = (request.Page - 1) * request.ResultsOnPage;
+        var query = dbContext.MinimalListImages
+            .FromSql<MinimalListImageModel>($"""
+                                              SELECT
+                                                images.id AS id,
+                                                images.uploaded_by_id,
+                                                images.title,
+                                                images.width,
+                                                images.height,
+                                                images.is_public,
+                                                images.extension,
+                                                ARRAY_AGG(tags.name) AS tags
+                                              FROM images
+                                              INNER JOIN image_tag
+                                                  ON images.id = image_tag.images_id
+                                              INNER JOIN tags
+                                                  ON image_tag.tags_id = tags.id
+                                              WHERE images.tags_arr @> {tagsIdsFromQuery}
+                                              AND (images.is_public = true OR {user?.IsAdmin} = true OR ({ user?.Id } IS NOT NULL AND {user?.Id} = images.uploaded_by_id))
+                                              GROUP BY
+                                                  images.id, uploaded_by_id, title, width, height, is_public, extension
+                                              ORDER BY images.id DESC
+                                              OFFSET {toSkip}
+                                              LIMIT {request.ResultsOnPage}
+                                              """);
+        
+        // if (user is null)
+        // {
+        //     query = query.Where(i => i.IsPublic == true);
+        // }
+        //
+        // if (user is not null && !user.IsAdmin)
+        // {
+        //     query = query.Where(i => i.IsPublic == true || i.UploadedById == user.Id);
+        // }
+        
+        // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applied is unacceptably slow.
+        var total = await query.CountAsync();
+        
+        var results = await query
+            .ToListAsync();
+        
+        var totalPages = (int)Math.Ceiling((decimal)total / request.ResultsOnPage);
+
+        return new ListResponse<MinimalImageDto>()
+        {
+            Data = results.Select(i => new MinimalImageDto()
+            {
+                Id = i.Id,
+                Tags = i.Tags ?? [],
+                Title = i.Title,
+                Url = GetUrlForImage(i.Id, i.Extension ?? ""),
+                ThumbnailUrl = GetThumbnailUrl(i.Id),
+                IsPublic = i.IsPublic,
+                Height = i.Height,
+                Width = i.Width
+            }).ToList(),
             Page = request.Page,
             TotalPages = totalPages,
             TotalRecords = total,
