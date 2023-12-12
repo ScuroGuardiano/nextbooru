@@ -337,6 +337,45 @@ namespace Nextbooru.Core.Migrations
                     b.ToTable("image_votes", (string)null);
                 });
 
+            modelBuilder.Entity("Nextbooru.Core.Models.QueryTypes.MinimalListImageModel", b =>
+                {
+                    b.Property<string>("Extension")
+                        .HasColumnType("text")
+                        .HasColumnName("extension");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer")
+                        .HasColumnName("height");
+
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_public");
+
+                    b.Property<List<string>>("Tags")
+                        .HasColumnType("text[]")
+                        .HasColumnName("tags");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.Property<Guid>("UploadedById")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uploaded_by_id");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer")
+                        .HasColumnName("width");
+
+                    b.ToTable((string)null);
+
+                    b.ToView(null, (string)null);
+                });
+
             modelBuilder.Entity("Nextbooru.Core.Models.Tag", b =>
                 {
                     b.Property<int>("Id")
