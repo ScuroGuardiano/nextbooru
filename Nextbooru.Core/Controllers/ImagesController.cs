@@ -15,6 +15,7 @@ namespace Nextbooru.Core.Controllers;
 public class ImagesController : ControllerBase
 {
     private readonly ImageService imageService;
+    private readonly MinimalQueringImageService minimalImageService;
     private readonly ImageVotingService imageVotingService;
     private readonly ISessionService<Session> sessionService;
     private readonly AppSettings configuration;
@@ -22,11 +23,12 @@ public class ImagesController : ControllerBase
     public ImagesController(
         ImageService imageService,
         ISessionService<Session> sessionService,
-        IOptions<AppSettings> options, ImageVotingService imageVotingService)
+        IOptions<AppSettings> options, ImageVotingService imageVotingService, MinimalQueringImageService minimalImageService)
     {
         this.imageService = imageService;
         this.sessionService = sessionService;
         this.imageVotingService = imageVotingService;
+        this.minimalImageService = minimalImageService;
         this.configuration = options.Value;
     }
 
@@ -45,7 +47,7 @@ public class ImagesController : ControllerBase
 
         var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
 
-        return await imageService.ListImageMinimalsAsync(imagesQuery, user);
+        return await minimalImageService.ListImagesAsync(imagesQuery, user);
     }
     
     [HttpGet("detailed")]

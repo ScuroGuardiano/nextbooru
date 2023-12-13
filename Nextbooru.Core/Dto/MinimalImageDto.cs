@@ -16,7 +16,7 @@ public class MinimalImageDto
     public bool IsPublic { get; set; }
     public required string Url { get; set; }
     public required string ThumbnailUrl { get; set; }
-    public required List<string> Tags { get; set; }
+    public required IEnumerable<string> Tags { get; set; }
 
     public static MinimalImageDto FromImageModel(Image image, string imageUrl, string thumbnailUrl)
     {

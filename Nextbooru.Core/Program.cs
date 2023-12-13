@@ -27,6 +27,7 @@ builder.Services.AddSingleton<ImageConvertionService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<ImageVotingService>();
 builder.Services.AddScoped<TagsService>();
+builder.Services.AddScoped<MinimalQueringImageService>();
 
 // HOLY FUCK, WHY IT'S ENABLED BY DEFAULT XD
 ValidatorOptions.Global.LanguageManager.Enabled = false;
