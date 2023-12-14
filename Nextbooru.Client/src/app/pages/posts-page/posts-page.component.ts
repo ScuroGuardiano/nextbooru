@@ -60,7 +60,7 @@ export class PostsPageComponent implements OnInit, OnChanges {
   @Select(PostsState) postsState$!: Observable<PostsStateModel>;
   mediaElements$: Observable<IMediaList<IMediaGalleryElement>> = this.postsState$.pipe(
     map(st => ({
-      data: st.posts.map(MediaGalleryElement.fromImageDto),
+      data: st.posts.map(MediaGalleryElement.fromMinimalImageDto),
       page: st.page!,
       totalPages: st.totalPages!,
       totalRecords: st.totalRecords!

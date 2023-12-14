@@ -4,12 +4,12 @@ import { Injectable } from "@angular/core";
 import { LoadPosts, PostsJumpToPage, PostsNextPage, PostsPreviousPage } from "../actions/posts.actions";
 import { ImagesService } from "src/app/services/images.service";
 import { tap } from "rxjs";
-import { ImageDto } from "src/app/backend/backend-types";
+import { MinimalImageDto } from "src/app/backend/backend-types";
 
 export const POSTS_STATE_TOKEN = new StateToken<PostsStateModel>('posts');
 
 export interface PostsStateModel {
-  posts: ImageDto[];
+  posts: MinimalImageDto[];
   tags?: string;
   page: number;
   totalPages?: number;

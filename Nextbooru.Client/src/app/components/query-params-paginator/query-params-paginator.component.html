@@ -1,15 +1,15 @@
 <a
-*ngIf="currentPage > 1"
-routerLink="."
-[queryParams]="{ page: 1}"
-queryParamsHandling='merge'
+  *ngIf="currentPage > 1"
+  routerLink="."
+  [queryParams]="{ page: 1}"
+  queryParamsHandling='merge'
 >&lt;&lt;</a>
 
 <a
-*ngIf="currentPage > 1"
-routerLink="."
-[queryParams]="{ page: currentPage - 1 }"
-queryParamsHandling='merge'
+  *ngIf="currentPage > 1"
+  routerLink="."
+  [queryParams]="{ page: currentPage - 1 }"
+  queryParamsHandling='merge'
 >&lt;</a>
 
 

@@ -1,4 +1,4 @@
-import { ImageDto } from "src/app/backend/backend-types";
+import { ImageDto, MinimalImageDto } from "src/app/backend/backend-types";
 import { IMediaGalleryElement } from "../interfaces/i-media-gallery-element";
 import { MEDIA_MODE, MediaMode } from "../enums/media-mode.enum";
 
@@ -27,11 +27,11 @@ export default class MediaGalleryElement implements IMediaGalleryElement {
     this.thumbnailUrl = init.thumbnailUrl;
   }
 
-  static fromImageDto(imageDto: ImageDto) {
+  static fromMinimalImageDto(imageDto: MinimalImageDto) {
     return new MediaGalleryElement({
       id: imageDto.id,
       title: imageDto.title,
-      tags: imageDto.tags?.map(t => t.name).join(" "),
+      tags: imageDto.tags.join(" "),
       width: imageDto.width,
       height: imageDto.height,
       isPublic: imageDto.isPublic,

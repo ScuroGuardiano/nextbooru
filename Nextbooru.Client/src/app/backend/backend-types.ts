@@ -75,6 +75,17 @@ export interface ImageDto {
   uploadedBy?: BasicUserInfo;
 }
 
+export interface MinimalImageDto {
+  id: number;
+  url: string;
+  thumbnailUrl: string;
+  title?: string;
+  isPublic: boolean;
+  width: number;
+  height: number;
+  tags: string[]
+}
+
 export interface ListResponse<T> {
   data: T[];
   page: number;

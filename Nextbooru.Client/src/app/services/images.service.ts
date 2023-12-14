@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ImageDto, ListImagesQuery, ListResponse } from '../backend/backend-types';
+import { ImageDto, ListImagesQuery, ListResponse, MinimalImageDto } from '../backend/backend-types';
 import { BackendEndpoints } from '../backend/backend-enpoints';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class ImagesService {
     if (query.resultsOnPage != null) params = params.set('resultsOnPage', query.resultsOnPage);
     if (query.tags != null) params = params.set('tags', query.tags);
 
-    return this.httpClient.get<ListResponse<ImageDto>>(BackendEndpoints.images.list, {
+    return this.httpClient.get<ListResponse<MinimalImageDto>>(BackendEndpoints.images.list, {
       params
     });
   }
