@@ -42,7 +42,7 @@ public class ImageVotingService
     public async Task<VoteScore> GetUserVote(Guid userId, long imageId)
     {
         return await dbContext.ImageVotes
-            .Where(iv => iv.UserId == userId)
+            .Where(iv => iv.UserId == userId && iv.ImageId == imageId)
             .Select(iv => iv.VoteScore)
             .FirstOrDefaultAsync();
     }

@@ -21,7 +21,7 @@ public class ImageDto
     ///  -1 -> Downvoted, 1 -> Upvoted, 0 -> Unvoted
     /// </summary>
     public VoteScore? UserVote { get; set; }
-    public List<TagDto> Tags { get; init; }
+    public List<TagDto>? Tags { get; init; }
     public BasicUserInfo? UploadedBy { get; init; }
 
     public static ImageDto FromImageModel(Image image, string imageUrl, string thumbnailUrl)
