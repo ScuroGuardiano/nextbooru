@@ -57,6 +57,8 @@ public class MinimalQueringImageService
                     images.extension,
                     ARRAY_AGG(tags.name) AS tags
                 FROM images
+                    -- I need to get rid of this JOINs, maybe query tag names in separate query
+                    -- As those JOINs makes query to run like 15x slower on small dataset (500 matched, 8000 total in database)
                 INNER JOIN image_tag
                     ON images.id = image_tag.images_id
                 INNER JOIN tags
@@ -80,7 +82,7 @@ public class MinimalQueringImageService
         )).ToList();
         
         // TODO: [CRITICAL PERFORMANCE ISSUE] counting on large datasets with filter applied is unacceptably slow.
-        // This will be solved after I write custom indexing engine I guess
+        // Or maybe I tested it on wrong query this query is but there will be more complicated queries so I must test that then
         var total = await connection.QueryFirstAsync<int>(
             $"""
                 SELECT COUNT(*) FROM images
