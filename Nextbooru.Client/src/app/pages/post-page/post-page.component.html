@@ -1,6 +1,14 @@
 <ng-container *ngIf="imageMetadata$ | async as image; else loading">
   <div class="post-container" *ngIf="image.data as data; else error">
     <div class="metadata">
+      <div class="votes">
+        <app-vote
+          [score]="score()"
+          [userVote]="userVote()"
+          (vote)="vote(data.id, $event)"
+          [disabled]="processingVote()"
+        ></app-vote>
+      </div>
       <div class="tags">
         <h3>Tags</h3>
         <ul>
@@ -33,7 +41,6 @@
             Source: <a [href]="image.data.source" target="_blank">{{ image.data.source }}</a>
           </li>
           <li class="_todo">Rating: TODO XD</li>
-          <li class="_todo">Votes: TODO, nicer, idk some nice buttons + and - or arrows</li>
         </ul>
       </div>
       <div class="Options">

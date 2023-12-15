@@ -1,0 +1,23 @@
+<button
+  class="upvote"
+  [ngClass]="{ voted: userVote === 'upvote' }"
+  [disabled]="disabled"
+  (click)="vote.emit('upvote')"
+>
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="64" height="64" />
+    <polyline class="vote-arrow" points="40 36 32 28 24 36" />
+  </svg>
+</button>
+<span>{{ score }}</span>
+<button
+  class="downvote"
+  [ngClass]="{ voted: userVote === 'downvote' }"
+  [disabled]="disabled"
+  (click)="vote.emit('downvote')"
+>
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="64" height="64" />
+    <polyline class="vote-arrow" points="40 28 32 36 24 28" />
+  </svg>
+</button>

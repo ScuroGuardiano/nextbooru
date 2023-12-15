@@ -71,6 +71,8 @@ export interface ImageDto {
   height: number;
   sizeInBytes: number;
   isPublic: boolean;
+  score: number;
+  userVote?: -1 | 0 | 1 | null;
   tags?: TagDto[];
   uploadedBy?: BasicUserInfo;
 }
@@ -93,4 +95,9 @@ export interface ListResponse<T> {
   totalRecords: number;
   recordsPerPage: number;
   lastRecordId: number;
+}
+
+export interface VoteChange {
+  score: number,
+  voteScore: -1 | 0 | 1;
 }

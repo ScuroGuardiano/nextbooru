@@ -15,7 +15,9 @@ export const BackendEndpoints = {
   upload: `${apiUrl}/upload`,
   images: {
     list: `${apiUrl}/images`,
-    get: (id: number) => `${apiUrl}/images/${id}`
+    get: (id: number) => `${apiUrl}/images/${id}`,
+    upvote: (id: number) => `${apiUrl}/images/${id}/upvote`,
+    downvote: (id: number) => `${apiUrl}/images/${id}/downvote`
   },
   tags: {
     autocomplete: `${apiUrl}/tags/autocomplete`,
