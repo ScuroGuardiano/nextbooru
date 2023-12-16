@@ -1,4 +1,7 @@
 # Nextbooru
+
+> Note: project is **VERY WIP**
+
 Blazingly fast, mobile friendly, convient image board written in ASP.NET, Entity Framework and Angular!
 
 ## How to run this thingy
