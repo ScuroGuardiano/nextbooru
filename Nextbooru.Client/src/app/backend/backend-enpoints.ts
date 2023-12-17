@@ -17,7 +17,9 @@ export const BackendEndpoints = {
     list: `${apiUrl}/images`,
     get: (id: number) => `${apiUrl}/images/${id}`,
     upvote: (id: number) => `${apiUrl}/images/${id}/upvote`,
-    downvote: (id: number) => `${apiUrl}/images/${id}/downvote`
+    downvote: (id: number) => `${apiUrl}/images/${id}/downvote`,
+    makePublic: (id: number) => `${apiUrl}/images/${id}/make-public`,
+    makeNonPublic: (id: number) => `${apiUrl}/images/${id}/make-non-public`
   },
   tags: {
     autocomplete: `${apiUrl}/tags/autocomplete`,

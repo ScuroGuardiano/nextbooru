@@ -14,6 +14,8 @@ public class UploadFileRequest
     
     public string? Source { get; set; }
 
+    public bool Public { get; set; } = false;
+
     public class UploadFileRequestValidator : AbstractValidator<UploadFileRequest>
     {
         public UploadFileRequestValidator()

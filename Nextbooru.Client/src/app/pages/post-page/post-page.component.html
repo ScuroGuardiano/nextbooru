@@ -40,12 +40,30 @@
           <li *ngIf="image.data.source">
             Source: <a [href]="image.data.source" target="_blank">{{ image.data.source }}</a>
           </li>
+          <li>Visibility: {{ visibility() }}</li>
           <li class="_todo">Rating: TODO XD</li>
         </ul>
       </div>
       <div class="Options">
         <h3>Options</h3>
-        <p>Todo</p>
+        <ul>
+          <li *ngIf="isPublic() !== null">
+            @if(isPublic()) {
+              <button
+                class="link-like-btn"
+                [disabled]="processingVisibilityChange()"
+                (click)="makeNonPublic(image.data.id)"
+              >Make non public</button>
+            }
+            @else {
+              <button
+                class="link-like-btn"
+                [disabled]="processingVisibilityChange()"
+                (click)="makePublic(image.data.id)"
+              >Make public</button>
+            }
+          </li>
+        </ul>
       </div>
       <div class="History">
         <h3>History</h3>

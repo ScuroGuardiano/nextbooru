@@ -122,6 +122,19 @@ button:disabled {
   }
 }
 
+.link-like-btn {
+  border: none;
+  background-color: transparent;
+  color: var(--link);
+  padding: 0;
+
+  &:hover {
+    // text-decoration: underline;
+    color: var(--bg);
+    background-color: var(--link);
+  }
+}
+
 .btn-primary {
   background-color: var(--accent-400);
   color: var(--fg-on-accent);

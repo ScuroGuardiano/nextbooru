@@ -284,7 +284,7 @@ public class ImageService
 
             await using var fileStream = request.File.OpenReadStream();
             var storeFileId = await mediaStore.SaveFileAsync(fileStream, fileExtension);
-            var tags = await GetOrAddTagsFromRequestAsync(request);
+            var tags = await GetOrAddTagsFromRequestAsync(request.Tags);
 
             var image = new Image()
             {
@@ -301,6 +301,12 @@ public class ImageService
                 TagsArr = tags.Select(t => t.Id).ToList()
             };
 
+            if (request.Public)
+            {
+                image.IsPublic = true;
+                image.PublishedAt = DateTime.Now;
+            }
+            
             dbContext.Add(image);
             await dbContext.SaveChangesAsync();
 
@@ -315,14 +321,78 @@ public class ImageService
         {
             rawImage?.Dispose();
         }
-
     }
 
-    public Task<bool> CanUserReadImageAsync(User? user, Image image)
+    public async Task<Image> UpdateImageAsync(long imageId, UpdateImageRequest request)
     {
-        return Task.FromResult(image.IsPublic
-                               || user is not null && (user.IsAdmin || user.Id == image.UploadedById)
-        );
+        var image = await dbContext.Images.FirstOrDefaultAsync(i => i.Id == imageId);
+
+        if (image is null)
+        {
+            throw new NotFoundException(imageId, "Image");
+        }
+
+        image.Title = request.Title;
+        image.Source = request.Source;
+        var tags = await GetOrAddTagsFromRequestAsync(request.Tags);
+        image.Tags = tags;
+        image.TagsArr = tags.Select(t => t.Id).ToList();
+        await dbContext.SaveChangesAsync();
+        return image;
+    }
+
+    public async Task<Image> PatchImageAsync(long imageId, PatchImageRequest request)
+    {
+        var image = await dbContext.Images.FirstOrDefaultAsync(i => i.Id == imageId);
+
+        if (image is null)
+        {
+            throw new NotFoundException(imageId, "Image");
+        }
+
+        if (request.Title is not null)
+        {
+            image.Title = request.Title;
+        }
+
+        if (request.Source is not null)
+        {
+            image.Source = request.Source;
+        }
+
+        if (request.Tags is not null)
+        {
+            var tags = await GetOrAddTagsFromRequestAsync(request.Tags);
+            image.Tags = tags;
+            image.TagsArr = tags.Select(t => t.Id).ToList();
+        }
+
+        await dbContext.SaveChangesAsync();
+        return image;
+    }
+
+    public async Task MakeImagePublicAsync(long imageId)
+    {
+        await dbContext.Images
+            .Where(i => i.Id == imageId)
+            .ExecuteUpdateAsync(i =>
+                i.SetProperty(i => i.IsPublic, true)
+                    .SetProperty(i => i.PublishedAt, i => i.PublishedAt ?? DateTime.UtcNow)
+            );
+    }
+
+    public async Task MakeImageNonPublicAsync(long imageId)
+    {
+        await dbContext.Images
+            .Where(i => i.Id == imageId)
+            .ExecuteUpdateAsync(i => i.SetProperty(i => i.IsPublic, false));
+    }
+
+    // TODO: Those methods will become part of Nextbooru Authorization System and will gtfo of here.
+    #region Authorization
+    public bool CanUserReadImage(User? user, Image image)
+    {
+        return image.IsPublic || user is not null && (user.IsAdmin || user.Id == image.UploadedById);
     }
 
     public async Task<bool> CanUserReadImageAsync(User? user, long imageId)
@@ -336,6 +406,47 @@ public class ImageService
         return await dbContext.Images.AnyAsync(i => i.IsPublic || userId == i.UploadedById);
     }
 
+    public bool CanUserModifyImage(User? user, Image image)
+    {
+        return image.IsPublic || user is not null && (user.IsAdmin || user.Id == image.UploadedById);
+    }
+
+    public async Task<bool> CanUserModifyImageAsync(User? user, long imageId)
+    {
+        var userId = user?.Id ?? Guid.Empty;
+        if (user is not null && user.IsAdmin)
+        {
+            return true;
+        }
+
+        return await dbContext.Images.AnyAsync(i => i.IsPublic || userId == i.UploadedById);
+    }
+
+    public bool CanUserMakeImagePublic(User? user, Image image)
+    {
+        // For now
+        return CanUserModifyImage(user, image);
+    }
+
+    public async Task<bool> CanUserMakeImagePublicAsync(User? user, long imageId)
+    {
+        // For now
+        return await CanUserModifyImageAsync(user, imageId);
+    }
+
+    public bool CanUserMakeImageNonPublic(User? user, Image image)
+    {
+        // For now
+        return CanUserModifyImage(user, image);
+    }
+    
+    public async Task<bool> CanUserMakeImageNonPublicAsync(User? user, long imageId)
+    {
+        // For now
+        return await CanUserModifyImageAsync(user, imageId);
+    }
+    #endregion
+    
     private async Task<List<ImageVariant>> AddThumbnailsAsync(Image image, ImageSharpImage rawImage)
     {
         List<ImageVariant> variants = [];
@@ -373,9 +484,9 @@ public class ImageService
         return variants;
     }
 
-    private async Task<List<Tag>> GetOrAddTagsFromRequestAsync(UploadFileRequest request, bool shouldIncreaseImagesCount = false)
+    private async Task<List<Tag>> GetOrAddTagsFromRequestAsync(string tagsStr, bool shouldIncreaseImagesCount = false)
     {
-        var rawTags = request.Tags.Split(" ").Select(t => t.ToLower());
+        var rawTags = tagsStr.Split(" ").Select(t => t.ToLower());
 
         var tags = await dbContext.Tags
             .Where(t => rawTags.Contains(t.Name))

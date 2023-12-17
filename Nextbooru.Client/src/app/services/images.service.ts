@@ -36,4 +36,12 @@ export class ImagesService {
   public vote(id: number, vote: "upvote" | "downvote") {
     return this[vote](id);
   }
+
+  public makePublic(id: number) {
+    return this.httpClient.put<void>(BackendEndpoints.images.makePublic(id), {});
+  }
+
+  public makeNonPublic(id: number) {
+    return this.httpClient.put<void>(BackendEndpoints.images.makeNonPublic(id), {});
+  }
 }

@@ -58,4 +58,6 @@ public class Image : BaseEntity
 
     [Required]
     public bool IsPublic { get; set; }
+    
+    public DateTime? PublishedAt { get; set; }
 }

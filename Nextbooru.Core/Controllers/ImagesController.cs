@@ -118,7 +118,7 @@ public class ImagesController : ControllerBase
         {
             // If image is not public only uploader and admin can see it
             var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
-            if (!await imageService.CanUserReadImageAsync(user, image))
+            if (!imageService.CanUserReadImage(user, image))
             {
                 Response.ContentType = "text/html";
                 Response.StatusCode = StatusCodes.Status418ImATeapot;
@@ -167,6 +167,38 @@ public class ImagesController : ControllerBase
         }
 
         return new JsonResult(await imageVotingService.SwitchDownvote(user.Id, id));
+    }
+
+    [Authorize]
+    [HttpPut("{id:long}/make-public")]
+    public async Task<IActionResult> MakePublic([FromRoute] long id)
+    {
+        var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
+
+        if (!await imageService.CanUserMakeImagePublicAsync(user, id))
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        await imageService.MakeImagePublicAsync(id);
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPut("{id:long}/make-non-public")]
+    public async Task<IActionResult> MakeNonPublic([FromRoute] long id)
+    {
+        var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
+
+        if (!await imageService.CanUserMakeImageNonPublicAsync(user, id))
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
+        }
+
+        await imageService.MakeImageNonPublicAsync(id);
+
+        return NoContent();
     }
     
     private async Task SendOriginalImage(Image image)
