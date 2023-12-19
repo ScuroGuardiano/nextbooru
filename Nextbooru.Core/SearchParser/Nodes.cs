@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Nextbooru.Core.SearchParser;
 
 public abstract class Node;
@@ -7,6 +9,11 @@ public class EmptyNode : Node;
 
 public class TagNode : Node
 {
+    [SetsRequiredMembers]
+    public TagNode(string value)
+    {
+        Value = value;
+    }
     public required string Value { get; set; }
 }
 
@@ -71,17 +78,30 @@ public class MetatagSortingNode : Node
 
 public class NegationNode : Node
 {
+    [SetsRequiredMembers]
+    public NegationNode(Node node)
+    {
+        Value = node;
+    }
     public required Node Value { get; set; }
 }
 
 public class AndNode : Node
 {
-    public required Node[] Value { get; set; }
+    public AndNode(IReadOnlyCollection<Node> value)
+    {
+        Value = value;
+    }
+    public IReadOnlyCollection<Node> Value { get; set; }
 }
 
 public class OrNode : Node
 {
-    public required Node[] Value { get; set; }
+    public OrNode(IReadOnlyCollection<Node> value)
+    {
+        Value = value;
+    }
+    public IReadOnlyCollection<Node> Value { get; set; }
 }
 
 // cat
