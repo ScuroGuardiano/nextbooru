@@ -1,8 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Nextbooru.Auth.Models;
-using Nextbooru.Core.Models;
 
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Responses;
 
 
 //

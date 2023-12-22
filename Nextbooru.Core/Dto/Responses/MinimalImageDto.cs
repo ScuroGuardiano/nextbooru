@@ -1,6 +1,6 @@
 using Nextbooru.Core.Models;
 
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Responses;
 
 /// <summary>
 /// Serves the same purpouse as <see cref="ImageDto"/> but

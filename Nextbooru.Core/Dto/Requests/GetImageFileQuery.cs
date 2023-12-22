@@ -1,4 +1,4 @@
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Requests;
 
 public class GetImageFileQuery
 {

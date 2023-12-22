@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Nextbooru.Core.Dto.Responses;
 
 namespace Nextbooru.Core.Controllers;
 
@@ -14,9 +15,9 @@ public class RootController : ControllerBase
     }
 
     [HttpGet(Name = "GetAppInfo")]
-    public Dto.AppInfo Get()
+    public AppInfo Get()
     {
-        return new Dto.AppInfo()
+        return new AppInfo()
         {
             Version = configuration["AppInfo:Version"],
             Name = configuration["AppInfo:Name"],

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Requests;
 
 public class UploadFileRequest
 {

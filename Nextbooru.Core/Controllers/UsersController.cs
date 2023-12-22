@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto;
+using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Controllers;

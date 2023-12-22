@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using MimeTypes;
 using Nextbooru.Auth.Models;
 using Nextbooru.Core.Dto;
+using Nextbooru.Core.Dto.Requests;
+using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Core.Exceptions;
 using Nextbooru.Core.Models;
 using Nextbooru.Shared.Storage;

@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Extensions;
 using Nextbooru.Core.Models;
 
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Responses;
 
 public class TagDto
 {

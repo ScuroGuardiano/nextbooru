@@ -1,9 +1,8 @@
 using FluentValidation;
-using Microsoft.Extensions.Options;
 using Nextbooru.Core.Models;
 using Nextbooru.Shared.QueryHelpers;
 
-namespace Nextbooru.Core.Dto;
+namespace Nextbooru.Core.Dto.Requests;
 
 public class ListTagsQuery
 {
