@@ -48,6 +48,8 @@ public class Image : BaseEntity
     public List<Tag>? Tags { get; set; } = [];
 
     public List<int> TagsArr { get; set; } = [];
+
+    public List<Album> Albums { get; set; } = [];
     
     public int Score { get; set; }
     

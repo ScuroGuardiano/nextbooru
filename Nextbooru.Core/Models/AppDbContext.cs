@@ -87,6 +87,16 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
             .HasIndex(iv => new { iv.ImageId, iv.UserId })
             .IsUnique();
 
+        modelBuilder.Entity<Album>()
+            .HasMany(a => a.Images)
+            .WithMany(i => i.Albums);
+
+        modelBuilder.Entity<Album>()
+            .HasOne(a => a.CreatedBy)
+            .WithMany()
+            .HasForeignKey(a => a.CreatedById)
+            .IsRequired();
+
         ConfigureBaseEntities(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }
