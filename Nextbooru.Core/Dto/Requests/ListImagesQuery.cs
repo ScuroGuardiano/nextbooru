@@ -3,19 +3,8 @@ using FluentValidation;
 
 namespace Nextbooru.Core.Dto.Requests;
 
-public class ListImagesQuery
+public class ListImagesQuery : PaginatedListQuery
 {
-    /// <summary>
-    /// Page result
-    /// </summary>
-    public int Page { get; set; } = 1;
-    
-    /// <summary>
-    /// How many results to put on page.<br/>
-    /// Nextbooru can be configured to ignore values higher than certain threshold
-    /// </summary>
-    public int ResultsOnPage { get; set; }
-    
     /// <summary>
     /// Tags are passed in a string with each tag separated by a comma.
     /// </summary>
@@ -31,8 +20,7 @@ public class ListImagesQuery
     {
         public ListImagesQueryValidator()
         {
-            RuleFor(x => x.Page).GreaterThanOrEqualTo(1);
-            RuleFor(x => x.ResultsOnPage).GreaterThanOrEqualTo(0);
+            Include(new PaginatedListQueryValidator());
         }
     }
 }

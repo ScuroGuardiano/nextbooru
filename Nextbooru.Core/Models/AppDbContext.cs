@@ -17,6 +17,8 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
     public DbSet<ImageVariant> ImageVariants { get; set; } = null!;
     public DbSet<ImageVote> ImageVotes { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
+
+    public DbSet<Album> Albums { get; set; } = null!;
     
     public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
     {
