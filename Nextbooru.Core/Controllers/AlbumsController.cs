@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Nextbooru.Auth.Models;
+using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto.Requests;
 using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Core.Models;
+using Nextbooru.Core.Services;
 using Nextbooru.Shared.QueryHelpers;
 
 namespace Nextbooru.Core.Controllers;
@@ -11,6 +15,15 @@ namespace Nextbooru.Core.Controllers;
 [Route("[controller]")]
 public class AlbumsController : ControllerBase
 {
+    private readonly AlbumService albumService;
+    private readonly ISessionService<Session> sessionService;
+
+    public AlbumsController(AlbumService albumService, ISessionService<Session> sessionService)
+    {
+        this.albumService = albumService;
+        this.sessionService = sessionService;
+    }
+
     [HttpGet]
     public ListResponse<AlbumDto> List([FromQuery] ListAlbumsQuery request)
     {
@@ -31,9 +44,12 @@ public class AlbumsController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public ActionResult<AlbumDto> Create([FromBody] CreateAlbumRequest request)
+    [DefaultStatusCode(StatusCodes.Status201Created)]
+    public async Task<AlbumDto> Create([FromBody] CreateAlbumRequest request)
     {
-        throw new NotImplementedException();
+        var userId = sessionService.GetCurrentSessionFromHttpContext()!.UserId;
+        var res = AlbumDto.From(await albumService.CreateAlbum(userId, request));
+        return res;
     }
 
     [Authorize]
@@ -42,7 +58,7 @@ public class AlbumsController : ControllerBase
     {
         throw new NotImplementedException();
     }
-    
+
     [HttpGet("orderable-fields")]
     public IEnumerable<string> GetTagOrderableFields()
     {
