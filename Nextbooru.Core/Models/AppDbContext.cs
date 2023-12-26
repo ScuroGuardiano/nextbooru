@@ -43,7 +43,7 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        AuthHelpers.RegisterSessionUserRelation<User, Session>(modelBuilder);
+        AuthHelpers.RegisterSessionUserRelation(modelBuilder);
             
         modelBuilder.Entity<Image>()
             .HasOne(i => i.UploadedBy)

@@ -4,13 +4,12 @@ using Nextbooru.Auth.Models;
 
 namespace Nextbooru.Auth.Services;
 
-public interface IUserService<TUser>
-where TUser : User
+public interface IUserService
 {
-    Task<TUser> RegisterUserAsync(RegisterUserRequest dto);
-    Task<TUser> AuthenticateUser(LoginUserRequest dto);
-    ClaimsPrincipal UserToClaimsPrincipal(TUser user, string authScheme);
+    Task<User> RegisterUserAsync(RegisterUserRequest dto);
+    Task<User> AuthenticateUser(LoginUserRequest dto);
+    ClaimsPrincipal UserToClaimsPrincipal(User user, string authScheme);
 
-    Task<TUser?> GetById(Guid id);
-    Task<TUser?> GetById(string id);
+    Task<User?> GetById(Guid id);
+    Task<User?> GetById(string id);
 }

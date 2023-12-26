@@ -13,6 +13,8 @@ charset = utf-8
 [*.cs]
 indent_style = space
 indent_size = 4
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0160.severity = none
 
 [*.{css,scss,html,js,ts,json,yml}]
 indent_style = space

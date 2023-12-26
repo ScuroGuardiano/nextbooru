@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
-using Nextbooru.Core.Dto;
 using Nextbooru.Core.Dto.Requests;
 using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Core.Exceptions;
@@ -19,12 +17,12 @@ public class ImagesController : ControllerBase
     private readonly ImageService imageService;
     private readonly MinimalQueringImageService minimalImageService;
     private readonly ImageVotingService imageVotingService;
-    private readonly ISessionService<Session> sessionService;
+    private readonly ISessionService sessionService;
     private readonly AppSettings configuration;
 
     public ImagesController(
         ImageService imageService,
-        ISessionService<Session> sessionService,
+        ISessionService sessionService,
         IOptions<AppSettings> options, ImageVotingService imageVotingService, MinimalQueringImageService minimalImageService)
     {
         this.imageService = imageService;
@@ -41,7 +39,7 @@ public class ImagesController : ControllerBase
         {
             imagesQuery.ResultsOnPage = configuration.DefaultResultsPerPage;
         }
-        
+
         if (imagesQuery.ResultsOnPage > configuration.MaxResultsPerPage)
         {
             imagesQuery.ResultsOnPage = configuration.MaxResultsPerPage;
@@ -51,7 +49,7 @@ public class ImagesController : ControllerBase
 
         return await minimalImageService.ListImagesAsync(imagesQuery, user);
     }
-    
+
     [HttpGet("detailed")]
     public async Task<ListResponse<ImageDto>> ListDetailedImages([FromQuery] ListImagesQuery imagesQuery)
     {
@@ -59,7 +57,7 @@ public class ImagesController : ControllerBase
         {
             imagesQuery.ResultsOnPage = configuration.DefaultResultsPerPage;
         }
-        
+
         if (imagesQuery.ResultsOnPage > configuration.MaxResultsPerPage)
         {
             imagesQuery.ResultsOnPage = configuration.MaxResultsPerPage;
@@ -78,7 +76,7 @@ public class ImagesController : ControllerBase
         {
             throw new NotFoundException(id, "Image");
         }
-        
+
         var user = sessionService.GetCurrentSessionFromHttpContext()?.User;
         if (!image.IsPublic)
         {
@@ -96,7 +94,7 @@ public class ImagesController : ControllerBase
         );
 
         imageDto.UserVote = user is not null ? await imageVotingService.GetUserVote(user.Id, image.Id) : null;
-        
+
         return new JsonResult(imageDto);
     }
 
@@ -129,7 +127,7 @@ public class ImagesController : ControllerBase
             }
         }
 
-        switch (query.Mode.ToLower())
+        switch (query.Mode.ToLowerInvariant())
         {
             case AppConstants.ImageModes.Thumbnail:
                 await SendThumbnailImage(image, format, query.W);
@@ -148,7 +146,7 @@ public class ImagesController : ControllerBase
     public async Task<IActionResult> Upvote([FromRoute] long id)
     {
         var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
-        
+
         if (!await imageService.CanUserReadImageAsync(user, id))
         {
             return new StatusCodeResult(StatusCodes.Status403Forbidden);
@@ -156,13 +154,13 @@ public class ImagesController : ControllerBase
 
         return new JsonResult(await imageVotingService.SwitchUpvote(user.Id, id));
     }
-    
+
     [Authorize]
     [HttpPut("{id:long}/downvote")]
     public async Task<IActionResult> Downvote([FromRoute] long id)
     {
         var user = sessionService.GetCurrentSessionFromHttpContext()!.User!;
-        
+
         if (!await imageService.CanUserReadImageAsync(user, id))
         {
             return new StatusCodeResult(StatusCodes.Status403Forbidden);
@@ -202,7 +200,7 @@ public class ImagesController : ControllerBase
 
         return NoContent();
     }
-    
+
     private async Task SendOriginalImage(Image image)
     {
         Response.ContentType = image.ContentType;

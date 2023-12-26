@@ -6,39 +6,17 @@ using Nextbooru.Auth.Models;
 
 namespace Nextbooru.Auth.Services;
 
-public class UserService<TDbContext> : UserService<TDbContext, User, Session>
+public class UserService<TDbContext> : IUserService
     where TDbContext : DbContext, IAuthDbContext
 {
-    public UserService(TDbContext dbContext)
-        : base(dbContext)
-    {
-    }
-}
-
-public class UserService<TDbContext, TUser> : UserService<TDbContext, TUser, Session>
-    where TDbContext : DbContext, IAuthDbContext<TUser, Session>
-    where TUser : User, new()
-{
-    public UserService(TDbContext dbContext)
-        : base(dbContext)
-    {
-    }
-}
-
-public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
-    where TDbContext : DbContext, IAuthDbContext<TUser, TSession>
-    where TSession : Session, new()
-    where TUser : User, new()
-{
-
     private readonly TDbContext dbContext;
 
     public UserService(TDbContext dbContext)
     {
         this.dbContext = dbContext;
     }
-    
-    public async Task<TUser> AuthenticateUser(LoginUserRequest dto)
+
+    public async Task<User> AuthenticateUser(LoginUserRequest dto)
     {
         var usernameLower = dto.Username.ToLowerInvariant();
 
@@ -59,20 +37,20 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
         return user;
     }
 
-    public async Task<TUser?> GetById(Guid id)
+    public async Task<User?> GetById(Guid id)
     {
         return await dbContext.Users
             .Where(user => user.Id == id)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<TUser?> GetById(string id)
+    public async Task<User?> GetById(string id)
     {
         var success = Guid.TryParse(id, out var guid);
         return success ? await GetById(guid) : null;
     }
 
-    public async Task<TUser> RegisterUserAsync(RegisterUserRequest dto)
+    public async Task<User> RegisterUserAsync(RegisterUserRequest dto)
     {
         if (await DoesUserAlreadyExits(dto))
         {
@@ -80,7 +58,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
         }
 
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
-        var user = new TUser {
+        var user = new User {
             Username = dto.Username!.ToLowerInvariant(),
             DisplayName = dto.Username,
             Email = dto.Email,
@@ -92,7 +70,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
         return user;
     }
 
-    public ClaimsPrincipal UserToClaimsPrincipal(TUser user, string authScheme)
+    public ClaimsPrincipal UserToClaimsPrincipal(User user, string authScheme)
     {
         var claims = new List<Claim>() {
             new(ClaimTypes.NameIdentifier, user.Id.ToString())

@@ -5,29 +5,8 @@ using Nextbooru.Shared;
 
 namespace Nextbooru.Auth.Services;
 
-public class SessionService<TDbContext> : SessionService<TDbContext, Session, User>
+public class SessionService<TDbContext> : ISessionService
     where TDbContext : DbContext, IAuthDbContext
-{
-        public SessionService(TDbContext dbContext, IHttpContextAccessor httpContextAccessor)
-            : base(dbContext, httpContextAccessor)
-        {
-        }
-}
-
-public class SessionService<TDbContext, TSession> : SessionService<TDbContext, TSession, User>
-    where TDbContext : DbContext, IAuthDbContext<User, TSession>
-    where TSession: Session, new()
-{
-        public SessionService(TDbContext dbContext, IHttpContextAccessor httpContextAccessor)
-            : base(dbContext, httpContextAccessor)
-        {
-        }
-}
-
-public class SessionService<TDbContext, TSession, TUser> : ISessionService<TSession>
-    where TDbContext : DbContext, IAuthDbContext<TUser, TSession>
-    where TSession : Session, new()
-    where TUser: User
 {
     private readonly TDbContext dbContext;
     private readonly IHttpContextAccessor httpContextAccessor;
@@ -38,20 +17,20 @@ public class SessionService<TDbContext, TSession, TUser> : ISessionService<TSess
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<TSession?> GetSessionAsync(string sessionId)
+    public async Task<Session?> GetSessionAsync(string sessionId)
     {
         if (!Guid.TryParse(sessionId, out var sessionGuid))
         {
             return null;
         }
-        
+
         return await dbContext.Sessions
             .Include(s => s.User)
             .Where(s => s.Id == sessionGuid)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<TSession?> AccessSessionAsync(string sessionId)
+    public async Task<Session?> AccessSessionAsync(string sessionId)
     {
         var context = httpContextAccessor.HttpContext!;
         var session = await GetSessionAsync(sessionId);
@@ -60,20 +39,21 @@ public class SessionService<TDbContext, TSession, TUser> : ISessionService<TSess
         {
             return null;
         }
-        
+
         session.LastAccess = DateTime.UtcNow;
-        session.LastIP = HttpHelpers.GetRealRemoteIpAddress(context);    
+        session.LastIP = HttpHelpers.GetRealRemoteIpAddress(context);
 
         await dbContext.SaveChangesAsync();
-        return session;    
+        return session;
     }
 
-    public async Task<TSession> CreateSessionAsync(User user)
+    public async Task<Session> CreateSessionAsync(User user)
     {
         var context = httpContextAccessor.HttpContext!;
         var ip = HttpHelpers.GetRealRemoteIpAddress(context);
 
-        var session = new TSession {
+        var session = new Session
+        {
             User = user,
             UserAgent = context.Request.Headers.UserAgent,
             CreatedAt = DateTime.UtcNow,
@@ -88,14 +68,14 @@ public class SessionService<TDbContext, TSession, TUser> : ISessionService<TSess
         return session;
     }
 
-    public TSession? GetCurrentSessionFromHttpContext()
+    public Session? GetCurrentSessionFromHttpContext()
     {
         var context = httpContextAccessor.HttpContext!;
-        var session = (TSession?)context.Items[AuthenticationConstants.SessionHttpContextItemKey];
+        var session = (Session?)context.Items[AuthenticationConstants.SessionHttpContextItemKey];
         return session;
     }
 
-    public async Task<TSession?> InvalidateCurrentSessionAsync()
+    public async Task<Session?> InvalidateCurrentSessionAsync()
     {
         var context = httpContextAccessor.HttpContext!;
         var sessionId = context.User.Claims

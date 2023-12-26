@@ -2,9 +2,7 @@ using System.Net;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
-using Nextbooru.Core.Dto;
 using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Shared;
 
@@ -15,9 +13,9 @@ namespace Nextbooru.Core.Controllers;
 [Route("users")]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService<User> userService;
+    private readonly IUserService userService;
 
-    public UsersController(IUserService<User> userService)
+    public UsersController(IUserService userService)
     {
         this.userService = userService;
     }

@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Nextbooru.Auth.Models;
 
 namespace Nextbooru.Auth;
 
 public static class AuthHelpers
 {
-    public static void RegisterSessionUserRelation<TUser, TSession>(ModelBuilder modelBuilder)
-    where TUser : Models.User
-    where TSession : Models.Session
+    public static void RegisterSessionUserRelation(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TSession>()
+        modelBuilder.Entity<Session>()
             .HasOne(s => s.User)
             .WithMany()
             .HasForeignKey(s => s.UserId)

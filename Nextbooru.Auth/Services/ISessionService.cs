@@ -2,20 +2,19 @@ using Nextbooru.Auth.Models;
 
 namespace Nextbooru.Auth.Services;
 
-public interface ISessionService<TSession>
-where TSession : Session
+public interface ISessionService
 {
-    Task<TSession?> GetSessionAsync(string sessionId);
+    Task<Session?> GetSessionAsync(string sessionId);
 
-    Task<TSession?> AccessSessionAsync(string sessionId);
+    Task<Session?> AccessSessionAsync(string sessionId);
 
-    TSession? GetCurrentSessionFromHttpContext();
+    Session? GetCurrentSessionFromHttpContext();
 
-    Task<TSession> CreateSessionAsync(User user);
+    Task<Session> CreateSessionAsync(User user);
 
-    Task<TSession?> InvalidateCurrentSessionAsync();
+    Task<Session?> InvalidateCurrentSessionAsync();
 
-    Task<bool> IsSessionValidAsync(TSession? session)
+    Task<bool> IsSessionValidAsync(Session? session)
     {
         return Task.FromResult(session is not null && session.IsValid);
     }

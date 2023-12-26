@@ -16,9 +16,9 @@ namespace Nextbooru.Core.Controllers;
 public class AlbumsController : ControllerBase
 {
     private readonly AlbumService albumService;
-    private readonly ISessionService<Session> sessionService;
+    private readonly ISessionService sessionService;
 
-    public AlbumsController(AlbumService albumService, ISessionService<Session> sessionService)
+    public AlbumsController(AlbumService albumService, ISessionService sessionService)
     {
         this.albumService = albumService;
         this.sessionService = sessionService;

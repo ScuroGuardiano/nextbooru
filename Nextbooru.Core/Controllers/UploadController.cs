@@ -14,9 +14,9 @@ namespace Nextbooru.Core.Controllers;
 public class UploadController : ControllerBase
 {
     private readonly ImageService imageService;
-    private readonly ISessionService<Session> sessionService;
+    private readonly ISessionService sessionService;
 
-    public UploadController(ImageService imageService, ISessionService<Session> sessionService)
+    public UploadController(ImageService imageService, ISessionService sessionService)
     {
         this.imageService = imageService;
         this.sessionService = sessionService;

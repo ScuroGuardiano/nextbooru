@@ -5,46 +5,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Nextbooru.Auth.Controllers;
-using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 
 namespace Nextbooru.Auth;
 
 public static class AuthenticationExtensions
 {
-    public static void AddSGAuthentication<TDbContext>(this IServiceCollection services)
+    public static void AddSGAuthentication<TDbContext>(this IServiceCollection services, bool addControllers = true)
         where TDbContext : DbContext, IAuthDbContext
     {
-        AddSGAuthentication<SessionService<TDbContext>, UserService<TDbContext>, User, Session>(services);
-    }
-
-    public static void AddSGAuthentication<TDbContext, TUser, TSession>(this IServiceCollection services)
-        where TDbContext : DbContext, IAuthDbContext<TUser, TSession>
-        where TSession: Session, new()
-        where TUser: User, new()
-    {
-        AddSGAuthentication<
-            SessionService<TDbContext, TSession, TUser>,
-            UserService<TDbContext, TUser, TSession>,
-            TUser,
-            TSession
-        >(services);
-    }
-
-    public static void AddSGAuthentication<TSessionService, TUserService, TUser, TSession>(this IServiceCollection services, bool addControllers = true)
-        where TSessionService : class, ISessionService<TSession>
-        where TUserService : class, IUserService<TUser>
-        where TSession: Session
-        where TUser: User
-    {
         services.AddHttpContextAccessor();
-        services.AddScoped<ISessionService<TSession>, TSessionService>();
-        services.AddScoped<IUserService<TUser>, TUserService>();
+        services.AddScoped<ISessionService, SessionService<TDbContext>>();
+        services.AddScoped<IUserService, UserService<TDbContext>>();
         services.AddValidatorsFromAssembly(Assembly.GetCallingAssembly());
 
         if (addControllers)
         {
-            services.AddScoped<IAuthenticationControllerDelegate, AuthenticationControllerDelegate<TUser, TSession>>();
             services.AddMvc().AddApplicationPart(typeof(AuthenticationController).Assembly);
         }
 
@@ -68,7 +44,7 @@ public static class AuthenticationExtensions
                 }
 
                 var httpCtx = context.HttpContext;
-                var sessionService = httpCtx.RequestServices.GetRequiredService<ISessionService<TSession>>();
+                var sessionService = httpCtx.RequestServices.GetRequiredService<ISessionService>();
 
                 var sessionId = context.Principal.Claims
                     .FirstOrDefault(c => c.Type == AuthenticationConstants.SessionClaimType)?.Value;
