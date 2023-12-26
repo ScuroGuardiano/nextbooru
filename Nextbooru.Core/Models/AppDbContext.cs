@@ -1,25 +1,21 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Options;
 using Nextbooru.Auth;
-using Nextbooru.Auth.Models;
 using Nextbooru.Shared;
 
 namespace Nextbooru.Core.Models;
 
-public sealed class AppDbContext : DbContext, IAuthDbContext
+public sealed class AppDbContext : AuthDbContext
 {
     private readonly AppSettings.DatabaseSettings configuration;
 
 
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<Session> Sessions { get; set; } = null!;
     public DbSet<Image> Images { get; set; } = null!;
     public DbSet<ImageVariant> ImageVariants { get; set; } = null!;
     public DbSet<ImageVote> ImageVotes { get; set; } = null!;
     public DbSet<Tag> Tags { get; set; } = null!;
-
     public DbSet<Album> Albums { get; set; } = null!;
-    
+
     public AppDbContext(DbContextOptions<AppDbContext> options, IOptions<AppSettings> configuration) : base(options)
     {
         this.configuration = configuration.Value.Database;
@@ -43,8 +39,8 @@ public sealed class AppDbContext : DbContext, IAuthDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        AuthHelpers.RegisterSessionUserRelation(modelBuilder);
-            
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Image>()
             .HasOne(i => i.UploadedBy)
             .WithMany()

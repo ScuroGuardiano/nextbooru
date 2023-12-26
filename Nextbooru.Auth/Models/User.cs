@@ -12,24 +12,22 @@ public class User : BaseEntity
     [Required]
     public string? Email { get; set; }
 
-    // TODO: There is problem with those required properties
-    // I can't mark them as requred, coz it would violate new() type constraint required by
-    // Generic services in Auth Project. I should do factory or something I guess.
-    
+    [Required]
+    public required string Username { get; set; }
+
+    [Required]
+    public required string DisplayName { get; set; }
+
+    [Required]
+    public required string HashedPassword { get; set; }
+
+    public DateTime? BannedUntil { get; set; }
+
     /// <summary>
-    /// Username should be always stored in lowercase.
+    /// If set to true then User has permissions to do virtually anything they want to.
     /// </summary>
-    [Required]
-    public string Username { get; set; }
-
-    [Required]
-    public string DisplayName { get; set; }
-
-    [Required]
-    public string HashedPassword { get; set; }
-
-    public DateTime? BannedUntil { get; set; } = null;
-
-    // Simple way for now
     public bool IsAdmin { get; set; } = false;
+
+    public List<UserPermission> Permissions { get; set; } = [];
+    public List<Role> Roles { get; set; } = [];
 }
