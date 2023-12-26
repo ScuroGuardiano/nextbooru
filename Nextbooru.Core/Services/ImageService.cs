@@ -51,7 +51,7 @@ public class ImageService
         return GetThumbnailUrl(image.Id);
     }
     public string GetThumbnailUrl(long imageId)
-    {   
+    {
         var format = configuration.Images.Thumbnails.Format;
         // TODO: This HAS to be changed, it's terrible.
         return $"/api/images/{imageId}.{format}";
@@ -66,12 +66,12 @@ public class ImageService
 
         if (user is null)
         {
-            query = query.Where(i => i.IsPublic == true);
+            query = query.Where(i => i.IsPublic);
         }
 
         if (user is not null && !user.IsAdmin)
         {
-            query = query.Where(i => i.IsPublic == true || i.UploadedById == user.Id);
+            query = query.Where(i => i.IsPublic || i.UploadedById == user.Id);
         }
 
         if (request.TagsArray.Length > 0)
@@ -139,7 +139,7 @@ public class ImageService
             .Where(iv => iv.Extension == "." + format && iv.ImageId == imageId)
             .OrderBy(iv => Math.Abs(width - iv.Width))
             .FirstOrDefaultAsync();
-        
+
         if (thumbnailVariant is not null)
         {
             return (
@@ -170,7 +170,7 @@ public class ImageService
             ms,
             new ImageConvertionOptions
             {
-                Format = format.ToLower(),
+                Format = format.ToLowerInvariant(),
                 Quality = configuration.Images.Thumbnails.Quality,
                 Width = width
             }

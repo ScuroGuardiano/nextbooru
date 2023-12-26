@@ -1,6 +1,4 @@
-using System.Linq.Dynamic;
 using System.Linq.Dynamic.Core;
-using Nextbooru.Core.Dto;
 using Nextbooru.Core.Dto.Requests;
 using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Core.Models;
@@ -19,7 +17,7 @@ public class TagsService
 
     public async Task<List<TagDto>> Autocomplete(string phrase)
     {
-        phrase = phrase.ToLower();
+        phrase = phrase.ToLowerInvariant();
         var tags = await dbContext.Tags
             .Where(t => t.Name.StartsWith(phrase))
             .OrderByDescending(t => t.ImagesCount)
@@ -40,7 +38,7 @@ public class TagsService
         {
             query = query.Where(t => t.Name == queryData.Name);
         }
-            
+
         if (queryData.OrderBy is not null)
         {
             var orderable = query.OrderBy($"{queryData.OrderBy} {queryData.OrderDirection}");
@@ -62,7 +60,7 @@ public class TagsService
             .Skip(queryData.ResultsOnPage * (queryData.Page - 1))
             .Take(queryData.ResultsOnPage)
             .ToListAsync();
-        
+
         return new ListResponse<TagDto>()
         {
             Data = tags.Select(TagDto.FromTagModel).ToList(),

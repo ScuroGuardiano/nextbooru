@@ -40,8 +40,8 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
     
     public async Task<TUser> AuthenticateUser(LoginUserRequest dto)
     {
-        var usernameLower = dto.Username.ToLower();
-        
+        var usernameLower = dto.Username.ToLowerInvariant();
+
         var user = await dbContext.Users
             .Where(user => user.Username == usernameLower)
             .FirstOrDefaultAsync();
@@ -81,7 +81,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
 
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password, 11);
         var user = new TUser {
-            Username = dto.Username!.ToLower(),
+            Username = dto.Username!.ToLowerInvariant(),
             DisplayName = dto.Username,
             Email = dto.Email,
             HashedPassword = hashedPassword
@@ -105,7 +105,7 @@ public class UserService<TDbContext, TUser, TSession> : IUserService<TUser>
 
     private async Task<bool> DoesUserAlreadyExits(RegisterUserRequest dto)
     {
-        var lowerUsername = dto.Username.ToLower();
+        var lowerUsername = dto.Username.ToLowerInvariant();
         return await dbContext.Users
             .Where(user => user.Username == lowerUsername)
             .AnyAsync();
