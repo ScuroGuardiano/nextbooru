@@ -16,7 +16,7 @@ indent_size = 4
 insert_final_newline = true
 dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.IDE0160.severity = none
-
+dotnet_diagnostic.CA1848.severity = none
 
 [*.{css,scss,html,js,ts,json,yml}]
 indent_style = space

@@ -14,6 +14,7 @@ public class AuthDbContext : DbContext, IAuthDbContext
     public DbSet<UserRole> UserRoles { get; set; } = null!;
     public DbSet<RolePermission> RolePermissions { get; set; } = null!;
     public DbSet<UserPermission> UserPermissions { get; set; } = null!;
+    public DbSet<AuthorizationMetadata> AuthorizationMetadata { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

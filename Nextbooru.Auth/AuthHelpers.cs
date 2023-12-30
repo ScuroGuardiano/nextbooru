@@ -33,8 +33,8 @@ public static class AuthHelpers
             .HasMany(u => u.Roles)
             .WithMany(r => r.Users)
             .UsingEntity<UserRole>(
-                    l => l.HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleName),
-                    r => r.HasOne(ur => ur.User).WithMany().HasForeignKey(ur => ur.UserId)
+                l => l.HasOne(ur => ur.Role).WithMany().HasForeignKey(ur => ur.RoleName),
+                r => r.HasOne(ur => ur.User).WithMany().HasForeignKey(ur => ur.UserId)
             );
     }
 }

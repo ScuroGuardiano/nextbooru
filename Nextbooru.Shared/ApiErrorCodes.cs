@@ -17,4 +17,5 @@ public static class ApiErrorCodes
     public const string UnsupportedMediaType = "UnsupportedMediaType";
     public const string InvalidImageFile = "InvalidImageFile";
     public const string NotFound = "NotFound";
+    public const string RecordAlreadyExists = "RecordAlreadyExists";
 }

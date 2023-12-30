@@ -11,4 +11,5 @@ public interface IAuthDbContext
     DbSet<UserRole> UserRoles { get; set; }
     DbSet<RolePermission> RolePermissions { get; set; }
     DbSet<UserPermission> UserPermissions { get; set; }
+    DbSet<AuthorizationMetadata> AuthorizationMetadata { get; set; }
 }

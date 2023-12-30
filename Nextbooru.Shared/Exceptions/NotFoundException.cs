@@ -1,12 +1,13 @@
-using Nextbooru.Shared;
+using Microsoft.AspNetCore.Http;
 
-namespace Nextbooru.Core.Exceptions;
+namespace Nextbooru.Shared.Exceptions;
 
 public class NotFoundException : Exception, IConvertibleToApiErrorResponse
 {
     public NotFoundException(object? resourceId = null, string? resourceType = null)
         : base(FormatErrorMessage(resourceId, resourceType))
     {}
+
     public ApiErrorResponse ToApiErrorResponse()
     {
         return new ApiErrorResponse()
