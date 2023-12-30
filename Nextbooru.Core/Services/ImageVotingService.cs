@@ -1,7 +1,7 @@
 using System.Data;
 using Nextbooru.Core.Dto;
 using Nextbooru.Core.Dto.Responses;
-using Nextbooru.Core.Exceptions;
+using Nextbooru.Shared.Exceptions;
 using Nextbooru.Core.Models;
 
 namespace Nextbooru.Core.Services;
