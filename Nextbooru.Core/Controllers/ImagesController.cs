@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Nextbooru.Auth.Services;
 using Nextbooru.Core.Dto.Requests;
 using Nextbooru.Core.Dto.Responses;
-using Nextbooru.Core.Exceptions;
+using Nextbooru.Shared.Exceptions;
 using Nextbooru.Core.Models;
 using Nextbooru.Core.Services;
 
