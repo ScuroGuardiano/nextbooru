@@ -4,7 +4,7 @@ using Nextbooru.Shared.Exceptions;
 
 namespace Nextbooru.Auth.Services;
 
-public class AuthorizationManager<TDbContext>
+public class AuthorizationManager<TDbContext> : IAuthorizationManager
     where TDbContext : DbContext, IAuthDbContext
 {
     private TDbContext dbContext;
@@ -19,7 +19,7 @@ public class AuthorizationManager<TDbContext>
         return await dbContext.Roles.FirstOrDefaultAsync(role => role.Name == roleName);
     }
 
-    public async Task<Role> CreateRole(string roleName)
+    public async Task<Role> CreateRoleAsync(string roleName)
     {
         var existingRole = await GetRoleAsync(roleName);
 
@@ -35,7 +35,7 @@ public class AuthorizationManager<TDbContext>
         return role;
     }
 
-    public async Task AddPermissionToRole(string roleName, string permissionKey)
+    public async Task AddPermissionToRoleAsync(string roleName, string permissionKey)
     {
         try
         {
@@ -57,7 +57,7 @@ public class AuthorizationManager<TDbContext>
         }
     }
 
-    public async Task AddUserToRole(Guid userId, string roleName)
+    public async Task AddUserToRoleAsync(Guid userId, string roleName)
     {
         try
         {
@@ -86,7 +86,7 @@ public class AuthorizationManager<TDbContext>
         }
     }
 
-    public async Task AddPermissionToUser(Guid userId, string permissionKey)
+    public async Task AddPermissionToUserAsync(Guid userId, string permissionKey)
     {
         try
         {
@@ -114,8 +114,8 @@ public class AuthorizationManager<TDbContext>
                       from userPermission in user.Permissions
                       from role in user.Roles
                       from rolePermission in role.Permissions
-                      where user.Id == userId
-                      && (userPermission.PermissionKey == permissionKey
+                      where user.Id == userId && (user.IsAdmin ||
+                        userPermission.PermissionKey == permissionKey
                           || rolePermission.PermissionKey == permissionKey)
                       select user).AnyAsync();
     }

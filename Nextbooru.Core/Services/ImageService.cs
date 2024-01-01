@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using MimeTypes;
 using Nextbooru.Auth.Models;
-using Nextbooru.Core.Dto;
 using Nextbooru.Core.Dto.Requests;
 using Nextbooru.Core.Dto.Responses;
 using Nextbooru.Shared.Exceptions;

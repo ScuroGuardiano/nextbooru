@@ -1,8 +1,11 @@
 using System.Collections.Immutable;
 using System.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Nextbooru.Auth.Authorization;
 using Nextbooru.Auth.Models;
 using Nextbooru.Auth.Services;
 
@@ -27,7 +30,16 @@ public static class AuthorizationExtensions
         }
 
         services.AddSingleton(permissionsContainer);
-        services.AddScoped<AuthorizationManager<TDbContext>>();
+        services.AddScoped<IAuthorizationManager, AuthorizationManager<TDbContext>>();
+        services.AddScoped<IAuthorizationHandler, HasPermissionHandler>();
+    }
+
+    public static async Task<AuthorizationResult> HasPermissionAsync(
+        this IAuthorizationService authorizationService,
+        ClaimsPrincipal User,
+        string permissionKey)
+    {
+        return await authorizationService.AuthorizeAsync(User, null, new HasPermissionRequirement(permissionKey));
     }
 
     private static void InitializeRoles<TDbContext>(IEnumerable<Role> roles)
